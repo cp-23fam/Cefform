@@ -8,6 +8,7 @@ fetch("https://localhost:7005/form/list")
       link.href = `form.html?id=${form.id}`;
       link.className = "block";
 
+        container.innerHTML = ``;
       const card = document.createElement("div");
       card.className =
         "relative bg-gray-200 p-4 rounded-lg shadow flex flex-col justify-between hover:bg-gray-300 transition";
@@ -26,7 +27,6 @@ fetch("https://localhost:7005/form/list")
             container.appendChild(link);
         });
         container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
-        container.innerHTML = ``;
     })
     .catch((error) => {
         console.error("Erreur lors de la récupération des données :", error);

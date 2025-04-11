@@ -35,7 +35,7 @@ fetch("https://localhost:7005/form/" + id.toString())
 
                     answers.forEach((answer, i) => {
                         const id = `q${index}_a${i}`;
-                        const inputType = q.type === 2 ? "checkbox" : "radio";
+                        const inputType = q.type === 2 ? "radio" : "checkbox";
 
                         const optionDiv = document.createElement("div");
                         optionDiv.className = "flex items-center gap-3 mb-2 pl-2 hover:bg-gray-50 rounded-md transition";
