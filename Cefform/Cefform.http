@@ -1,0 +1,6 @@
+@Cefform_HostAddress = http://localhost:5022
+
+GET {{Cefform_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
