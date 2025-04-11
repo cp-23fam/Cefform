@@ -1,3 +1,4 @@
+using Cefform;
 using Cefform.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,5 +31,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+Console.WriteLine(Encryption.Instance.PublicKey);
 
 app.Run();
