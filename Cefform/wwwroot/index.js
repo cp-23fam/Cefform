@@ -22,6 +22,8 @@ fetch("https://localhost:7005/form/list")
             link.appendChild(card);
             container.appendChild(link);
         });
+        container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
+        container.innerHTML = ``;
     })
     .catch((error) => {
         console.error("Erreur lors de la récupération des données :", error);
