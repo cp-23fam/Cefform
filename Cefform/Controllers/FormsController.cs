@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Cefform.Models;
 using Cefform.DTO;
 using MySqlConnector;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Cefform.Controllers
 {
@@ -58,8 +59,9 @@ namespace Cefform.Controllers
             }
 
             form.UserIduserNavigation = user;
+            await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id}").ToListAsync();
 
-            var output = new FormDTO { Name = form.Name, Description = form.Description, Anonym = (form.Anonym == 1), CreateTime = form.CreateTime, EndTime = form.EndTime, User = UserDTO.fromUser(form.UserIduserNavigation), Questions = form.Questions.Count };
+            var output = new FormDTO { Name = form.Name, Description = form.Description, Anonym = (form.Anonym == 1), CreateTime = form.CreateTime, EndTime = form.EndTime, User = UserDTO.fromUser(form.UserIduserNavigation), Questions = [.. form.Questions] };
 
             return output;
         }

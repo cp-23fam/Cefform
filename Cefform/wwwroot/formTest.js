@@ -150,7 +150,7 @@ const id = parseInt(params.get("id")); // attention à bien le caster en nombre
 const forms = getAllForms();
 
 const selectedForm = forms.find(form => form.id === id);
-const fullForm = getFormById(id);
+const form = getFormById(id);
 
 const container = document.getElementById("form-container");
 const title = document.getElementById("form-title");
@@ -158,27 +158,27 @@ const description = document.getElementById("form-description");
 const quizForm = document.getElementById("quiz-form");
 
 const colorBar = document.getElementById("color-bar");
-colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getColorClass(fullForm.color)}`;
+colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getColorClass(form.color)}`;
 
 const submitButton = document.getElementById("submit-button");
-submitButton.className += ` ${getColorButtonClass(fullForm.color)}`;
+submitButton.className += ` ${getColorButtonClass(form.color)}`;
 
 
-if (!selectedForm || !fullForm) {
+if (!selectedForm || !form) {
     container.innerHTML = `
         <p class="text-red-500 text-center">Formulaire introuvable.</p>
     `;
 } else {
-    document.title = "cefforms - " + fullForm.title;
-    title.textContent = fullForm.title;
-    description.textContent = fullForm.description;
+    document.title = "cefforms - " + form.title;
+    title.textContent = form.title;
+    description.textContent = form.description;
 
-    fullForm.questions.forEach((q, index) => {
+    form.questions.forEach((q, index) => {
         const block = document.createElement("div");
 
         block.innerHTML = `
             <label class="block font-semibold mb-1">${q.question}</label>
-            <textarea name="q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-${getColorClass(fullForm.color)} focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"></textarea>
+            <textarea name="q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-${getColorClass(form.color)} focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"></textarea>
         `;
 
         quizForm.appendChild(block);

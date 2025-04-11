@@ -1,6 +1,6 @@
 const container = document.getElementById("card-container");
 
-fetch("https://api.exemple.com/form")
+fetch("https://localhost:7005/form/list")
     .then((res) => res.json())
     .then((data) => {
         data.forEach((form) => {
@@ -13,10 +13,10 @@ fetch("https://api.exemple.com/form")
         
             card.innerHTML = `
                 <div>
-                    <h2 class="text-lg font-semibold">${form.title}</h2>
+                    <h2 class="text-lg font-semibold">${form.name}</h2>
                     <p class="text-sm text-gray-600">${form.description}</p>
                 </div>
-                <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg ${getColorClass(form.color)}"></div>
+                <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg ${getColorClass(form.ceff)}"></div>
             `;
         
             link.appendChild(card);
@@ -32,13 +32,13 @@ fetch("https://api.exemple.com/form")
 // Fonction pour choisir la couleur latérale
 function getColorClass(color) {
     switch (color) {
-        case "green":
+        case 0:
             return "bg-green-300";
-        case "blue":
+        case 1:
             return "bg-blue-400";
-        case "purple":
+        case 2:
             return "bg-purple-400";
-        case "cyan":
+        case 3:
             return "bg-cyan-400";
         default:
             return "bg-gray-400";

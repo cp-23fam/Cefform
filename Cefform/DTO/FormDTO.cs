@@ -10,6 +10,6 @@ namespace Cefform.DTO
         public DateOnly EndTime { get; set; }
         public bool Anonym {  get; set; }
         public UserDTO User { get; set; }
-        public int Questions { get; set; }
+        public List<Question> Questions { get; set; }
     }
 }
