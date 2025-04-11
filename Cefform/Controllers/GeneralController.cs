@@ -25,5 +25,11 @@ namespace Cefform.Controllers
             return BadRequest();
 
         }
+
+        [HttpGet("publickey")]
+        public IActionResult GetPublicKey()
+        {
+            return Ok(Encryption.Instance.PublicKey);
+        }
     }
 }
