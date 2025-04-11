@@ -24,26 +24,45 @@ fetch("https://localhost:7005/form/" + id.toString())
 
             form.questions.forEach((q, index) => {
                 const block = document.createElement("div");
+                block.className = "mb-6";
 
-                if (q.type == 2) {
+                if (q.type === 2 || q.type === 1) {
                     const parts = q.content.split("\t");
-                    block.innerHTML = `<label class="block font-semibold mb-1">${parts[0]}</label>`;
-                    for (answer of parts) {
-                        block.innerHTML += `<input type="checkbox" name="${parts[0]}">${answer}</input>`
-                    }
-                } else if (q.type == 1) {
-                    const parts = q.content.split("\t");
-                    block.innerHTML = `<label class="block font-semibold mb-1">${parts[0]}</label>`;
-                    for (answer of parts) {
-                        block.innerHTML += `<input type="radio" name="${parts[0]}">${answer}</input>`
-                    }
+                    const questionText = parts[0];
+                    const answers = parts.slice(1);
+
+                    block.innerHTML = `<label class="block font-semibold mb-2 text-lg">${questionText}</label>`;
+
+                    answers.forEach((answer, i) => {
+                        const id = `q${index}_a${i}`;
+                        const inputType = q.type === 2 ? "checkbox" : "radio";
+
+                        const optionDiv = document.createElement("div");
+                        optionDiv.className = "flex items-center gap-3 mb-2 pl-2 hover:bg-gray-50 rounded-md transition";
+
+                        optionDiv.innerHTML = `
+                            <input 
+                                type="${inputType}" 
+                                name="q${index}" 
+                                id="${id}" 
+                                value="${answer}" 
+                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="${id}" class="text-gray-800 cursor-pointer select-none">${answer}</label>
+                        `;
+
+                        block.appendChild(optionDiv);
+                    });
                 } else {
+                    // Question texte
                     block.innerHTML = `
                         <label class="block font-semibold mb-1">${q.content}</label>
-                        <textarea name="q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"></textarea>
+                        <textarea 
+                            name="q${index}" 
+                            rows="2" 
+                            class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md">
+                        </textarea>
                     `;
                 }
-
 
                 quizForm.appendChild(block);
             });

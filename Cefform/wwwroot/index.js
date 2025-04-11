@@ -21,16 +21,18 @@ fetch("https://localhost:7005/form/list")
                   form.ceff
                 )}"></div>
             `;
-
-      link.appendChild(card);
-      container.appendChild(link);
+        
+            link.appendChild(card);
+            container.appendChild(link);
+        });
+        container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
+        container.innerHTML = ``;
+    })
+    .catch((error) => {
+        console.error("Erreur lors de la récupération des données :", error);
+        container.className = "flex items-center justify-center h-64";
+        container.innerHTML = `<p class="text-red-500 text-center">Impossible de charger les formulaires.</p>`;
     });
-  })
-  .catch((error) => {
-    console.error("Erreur lors de la récupération des données :", error);
-    container.className = "flex items-center justify-center h-64";
-    container.innerHTML = `<p class="text-red-500 text-center">Impossible de charger les formulaires.</p>`;
-  });
 
 // Fonction pour choisir la couleur latérale
 function getColorClass(color) {
