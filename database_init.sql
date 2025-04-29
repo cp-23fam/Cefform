@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `cefform`.`form` (
   `create_time` DATE NOT NULL,
   `end_time` DATE NOT NULL,
   `anonym` TINYINT NOT NULL,
-  `published` TINYINT NOT NULL DEFAULT '0',
+  `published` TINYINT NOT NULL DEFAULT '-1',
   `user_iduser` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idform`),
   INDEX `fk_form_user_idx` (`user_iduser` ASC) VISIBLE,
