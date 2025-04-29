@@ -56,7 +56,7 @@ function createCard(form) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginButton = document.querySelector("a[href='login.html']");
-
+  const header = document.getElementById("header-buttons");
   const userId = getCookie("userId");
 
   if (userId) {
@@ -66,14 +66,22 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then(user => {
-        // Création du bouton utilisateur
+        // Bouton vers le profil
         const userButton = document.createElement("a");
         userButton.href = `profile.html?id=${user.iduser}`;
         userButton.className = "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
         userButton.textContent = `${user.firstName} ${user.lastName}`;
 
-        // Remplace le bouton login
-        loginButton.replaceWith(userButton);
+        // Bouton "Créer un formulaire"
+        const createFormButton = document.createElement("a");
+        createFormButton.href = "create.html";
+        createFormButton.className = `${getColorButtonClass(user.ceff)} text-white px-4 py-1 rounded transition hidden lg:block`;
+        createFormButton.textContent = "Créer un formulaire";
+
+        // Supprimer bouton login et insérer les deux boutons
+        if (loginButton) loginButton.remove();
+        header.appendChild(createFormButton);
+        header.appendChild(userButton);
       })
       .catch(err => {
         console.error("Impossible de charger les infos utilisateur :", err);
@@ -81,8 +89,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Fonction pour lire un cookie par nom
+// Fonction utilitaire pour lire un cookie par nom
 function getCookie(name) {
   const cookie = document.cookie.split("; ").find(c => c.startsWith(name + "="));
-  return cookie ? cookie.split("=")[1] : null;
+  return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
+}
+
+function getColorClassFromCeff(color) {
+  switch (color) {
+    case 0:
+      return "bg-green-300";
+    case 1:
+      return "bg-blue-400";
+    case 2:
+      return "bg-purple-400";
+    case 3:
+      return "bg-cyan-400";
+    default:
+      return "bg-gray-400";
+  }
+}
+
+function getColorButtonClass(color) {
+  switch (color) {
+    case 0:
+      return "bg-green-500 hover:bg-green-600";
+    case 1:
+      return "bg-blue-500 hover:bg-blue-600";
+    case 2:
+      return "bg-purple-500 hover:bg-purple-600";
+    case 3:
+      return "bg-cyan-500 hover:bg-cyan-600";
+    default:
+      return "bg-gray-500 hover:bg-gray-600";
+  }
 }

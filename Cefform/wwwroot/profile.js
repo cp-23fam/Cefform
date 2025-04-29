@@ -14,7 +14,7 @@ const formsList = document.getElementById("forms-list");
 const logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
     deleteCookie("userId"); // Pour rester cohérent même si on n'utilise pas de cookie ici
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 });
 
 // Fonction utilitaire : couleur Tailwind selon CEFF

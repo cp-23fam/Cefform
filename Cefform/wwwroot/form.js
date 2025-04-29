@@ -56,12 +56,7 @@ fetch("https://localhost:7005/form/" + id.toString())
                     // Question texte
                     block.innerHTML = `
                         <label class="block font-semibold mb-1">${q.content}</label>
-                        <textarea 
-                            name="q${index}" 
-                            rows="2" 
-                            class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md">
-                        </textarea>
-                    `;
+                        <textarea name="q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>`;
                 }
 
                 quizForm.appendChild(block);
