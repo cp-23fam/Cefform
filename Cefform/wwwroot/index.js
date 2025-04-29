@@ -52,62 +52,43 @@ function createCard(form) {
     <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg ${getColorClass(
       form.ceff
     )}"></div>
+      form.ceff
+    )}"></div>
   `;
 
   link.appendChild(card);
   return link;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const loginButton = document.querySelector("a[href='login.html']");
   const header = document.getElementById("header-buttons");
-  const userId = getCookie("userId");
 
-  if (userId) {
-    fetch(`https://localhost:7005/api/Users/${userId}`)
-      .then((res) => {
-        if (!res.ok)
-          throw new Error("Erreur lors du chargement de l'utilisateur");
-        return res.json();
-      })
-      .then((user) => {
-        // Bouton vers le profil
-        const userButton = document.createElement("a");
-        userButton.href = `profile.html`;
-        userButton.className =
-          "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
-        if (user.firstName != null && user.lastName != null) {
-          userButton.textContent = `${user.firstName} ${user.lastName}`;
-        } else {
-          userButton.textContent = `${user.username}`;
-        }
+  const infos = await getSelfInfosByToken();
 
-        // Bouton "Créer un formulaire"
-        const createFormButton = document.createElement("a");
-        createFormButton.href = `create.html`;
-        createFormButton.className = `${getColorButtonClass(
-          user.ceff
-        )} text-white px-4 py-1 rounded transition hidden lg:block`;
-        createFormButton.textContent = "Créer un formulaire";
+  if (infos != null) {
+    const userButton = document.createElement("a");
+    userButton.href = `profile.html?id=${infos.iduser}`;
+    userButton.className =
+      "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
+    userButton.textContent = `${infos.firstName} ${infos.lastName}`;
 
-        // Supprimer bouton login et insérer les deux boutons
-        if (loginButton) loginButton.remove();
-        header.appendChild(createFormButton);
-        header.appendChild(userButton);
-      })
-      .catch((err) => {
-        console.error("Impossible de charger les infos utilisateur :", err);
-      });
+    // Bouton "Créer un formulaire"
+    const createFormButton = document.createElement("a");
+    createFormButton.href = `create.html?ceff=${infos.ceff}`;
+    createFormButton.className = `${getColorButtonClass(
+      infos.ceff
+    )} text-white px-4 py-1 rounded transition hidden lg:block`;
+    createFormButton.textContent = "Créer un formulaire";
+
+    // Supprimer bouton login et insérer les deux boutons
+    if (loginButton) loginButton.remove();
+    header.appendChild(createFormButton);
+    header.appendChild(userButton);
   }
 });
 
 // Fonction utilitaire pour lire un cookie par nom
-function getCookie(name) {
-  const cookie = document.cookie
-    .split("; ")
-    .find((c) => c.startsWith(name + "="));
-  return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
-}
 
 function getMainColorFromCeff(color) {
   switch (color) {
