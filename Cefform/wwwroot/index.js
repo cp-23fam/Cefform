@@ -105,7 +105,7 @@ function getCookie(name) {
   return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
 }
 
-function getColorClassFromCeff(color) {
+function getMainColorFromCeff(color) {
   switch (color) {
     case 0:
       return "bg-green-300";
