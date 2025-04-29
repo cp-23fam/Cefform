@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Cefform.Controllers
 {
-    [Route("form/")]
+    [Route("api/form/")]
     [ApiController]
     public class FormsController : ControllerBase
     {

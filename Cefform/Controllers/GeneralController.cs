@@ -9,7 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Cefform.Controllers
 {
-    [Route("")]
+    [Route("api/")]
     [ApiController]
     public class GeneralController : ControllerBase
     {
