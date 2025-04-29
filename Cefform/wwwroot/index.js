@@ -1,15 +1,17 @@
 const container = document.getElementById("card-container");
 
-fetch("https://localhost:7005/form/list")
+fetch("https://localhost:7005/api/form/list")
   .then((res) => res.json())
   .then((data) => {
     container.innerHTML = ``;
-    container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
+    container.className =
+      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
     data.forEach((form) => {
       const card = createCard(form);
       container.appendChild(card);
     });
-    container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
+    container.className =
+      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
   })
   .catch((error) => {
     console.error("Erreur lors de la récupération des données :", error);
@@ -39,20 +41,22 @@ function createCard(form) {
   link.className = "block";
 
   const card = document.createElement("div");
-  card.className = "relative bg-gray-200 p-4 rounded-lg shadow flex flex-col justify-between hover:bg-gray-300 transition";
+  card.className =
+    "relative bg-gray-200 p-4 rounded-lg shadow flex flex-col justify-between hover:bg-gray-300 transition";
 
   card.innerHTML = `
     <div>
       <h2 class="text-lg font-semibold">${form.name}</h2>
       <p class="text-sm text-gray-600">${form.description}</p>
     </div>
-    <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg ${getColorClass(form.ceff)}"></div>
+    <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg ${getColorClass(
+      form.ceff
+    )}"></div>
   `;
 
   link.appendChild(card);
   return link;
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginButton = document.querySelector("a[href='login.html']");
@@ -61,21 +65,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (userId) {
     fetch(`https://localhost:7005/api/Users/${userId}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Erreur lors du chargement de l'utilisateur");
+      .then((res) => {
+        if (!res.ok)
+          throw new Error("Erreur lors du chargement de l'utilisateur");
         return res.json();
       })
-      .then(user => {
+      .then((user) => {
         // Bouton vers le profil
         const userButton = document.createElement("a");
         userButton.href = `profile.html?id=${user.iduser}`;
-        userButton.className = "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
+        userButton.className =
+          "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
         userButton.textContent = `${user.firstName} ${user.lastName}`;
 
         // Bouton "Créer un formulaire"
         const createFormButton = document.createElement("a");
         createFormButton.href = "create.html";
-        createFormButton.className = `${getColorButtonClass(user.ceff)} text-white px-4 py-1 rounded transition hidden lg:block`;
+        createFormButton.className = `${getColorButtonClass(
+          user.ceff
+        )} text-white px-4 py-1 rounded transition hidden lg:block`;
         createFormButton.textContent = "Créer un formulaire";
 
         // Supprimer bouton login et insérer les deux boutons
@@ -83,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         header.appendChild(createFormButton);
         header.appendChild(userButton);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Impossible de charger les infos utilisateur :", err);
       });
   }
@@ -91,7 +99,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Fonction utilitaire pour lire un cookie par nom
 function getCookie(name) {
-  const cookie = document.cookie.split("; ").find(c => c.startsWith(name + "="));
+  const cookie = document.cookie
+    .split("; ")
+    .find((c) => c.startsWith(name + "="));
   return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
 }
 

@@ -130,17 +130,27 @@ public partial class CefformContext : DbContext
 
             entity.ToTable("user");
 
+            entity.HasIndex(e => e.Username, "UNIQUE");
+
             entity.Property(e => e.Iduser).HasColumnName("iduser");
-            entity.Property(e => e.Ceff).HasColumnName("ceff");
             entity.Property(e => e.Email)
                 .HasMaxLength(115)
                 .HasColumnName("email");
+            entity.Property(e => e.Expiration)
+                .HasColumnType("datetime")
+                .HasColumnName("expiration");
             entity.Property(e => e.FirstName)
                 .HasMaxLength(40)
                 .HasColumnName("first_name");
             entity.Property(e => e.LastName)
                 .HasMaxLength(60)
                 .HasColumnName("last_name");
+            entity.Property(e => e.Token)
+                .HasMaxLength(255)
+                .HasColumnName("token");
+            entity.Property(e => e.Username)
+                .HasMaxLength(10)
+                .HasColumnName("username");
         });
 
         OnModelCreatingPartial(modelBuilder);

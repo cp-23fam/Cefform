@@ -13,51 +13,54 @@ const formsList = document.getElementById("forms-list");
 // Déconnexion
 const logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
-    deleteCookie("userId"); // Pour rester cohérent même si on n'utilise pas de cookie ici
-    window.location.href = "index.html";
+  deleteCookie("userId"); // Pour rester cohérent même si on n'utilise pas de cookie ici
+  window.location.href = "index.html";
 });
 
 // Fonction utilitaire : couleur Tailwind selon CEFF
 function getColorClassFromCeff(color) {
-    switch (color) {
-        case 0:
-            return "bg-green-300";
-        case 1:
-            return "bg-blue-400";
-        case 2:
-            return "bg-purple-400";
-        case 3:
-            return "bg-cyan-400";
-        default:
-            return "bg-gray-400";
-    }
+  switch (color) {
+    case 0:
+      return "bg-green-300";
+    case 1:
+      return "bg-blue-400";
+    case 2:
+      return "bg-purple-400";
+    case 3:
+      return "bg-cyan-400";
+    default:
+      return "bg-gray-400";
+  }
 }
 
 // Chargement de l'utilisateur et des formulaires
 fetch(apiUrl)
-    .then(res => {
-        if (!res.ok) throw new Error("Utilisateur introuvable");
-        return res.json();
-    })
-    .then(user => {
-        // Mise à jour du contenu
-        userName.textContent = `${user.firstName} ${user.lastName}`;
-        userEmail.textContent = user.email;
+  .then((res) => {
+    if (!res.ok) throw new Error("Utilisateur introuvable");
+    return res.json();
+  })
+  .then((user) => {
+    // Mise à jour du contenu
+    userName.textContent = `${user.firstName} ${user.lastName}`;
+    userEmail.textContent = user.email;
 
-        // Couleur latérale
-        const colorBar = document.getElementById("color-bar");
-        colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl ${getColorClassFromCeff(user.ceff)}`;
+    // Couleur latérale
+    const colorBar = document.getElementById("color-bar");
+    colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl ${getColorClassFromCeff(
+      user.ceff
+    )}`;
 
-        // Affichage des formulaires
-        if (user.forms.length === 0) {
-            formsList.innerHTML = `<p class="text-gray-500">Aucun formulaire créé pour l’instant.</p>`;
-        } else {
-            formsList.innerHTML = "";
-            user.forms.forEach(form => {
-                const div = document.createElement("div");
-                div.className = "p-4 border rounded-md bg-gray-50 hover:shadow transition-shadow";
+    // Affichage des formulaires
+    if (user.forms.length === 0) {
+      formsList.innerHTML = `<p class="text-gray-500">Aucun formulaire créé pour l’instant.</p>`;
+    } else {
+      formsList.innerHTML = "";
+      user.forms.forEach((form) => {
+        const div = document.createElement("div");
+        div.className =
+          "p-4 border rounded-md bg-gray-50 hover:shadow transition-shadow";
 
-                div.innerHTML = `
+        div.innerHTML = `
           <div class="flex justify-between items-center">
             <div>
               <h3 class="text-lg font-semibold">${form.name}</h3>
@@ -72,39 +75,38 @@ fetch(apiUrl)
           </div>
         `;
 
-                formsList.appendChild(div);
-            });
+        formsList.appendChild(div);
+      });
 
-            // Attacher les listeners pour suppression
-            document.querySelectorAll(".delete-btn").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const formId = btn.dataset.id;
-                    if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-                        fetch(`https://localhost:7005/api/Form/${formId}`, {
-                            method: "DELETE"
-                        })
-                            .then(res => {
-                                if (!res.ok) throw new Error("Échec de suppression");
-                                alert("Formulaire supprimé.");
-                                window.location.reload();
-                            })
-                            .catch(err => {
-                                console.error(err);
-                                alert("La suppression a échoué.");
-                            });
-                    }
-                });
-            });
-        }
-    })
-    .catch(err => {
-        userName.textContent = "Erreur";
-        userEmail.textContent = err.message;
-        formsList.innerHTML = `<p class="text-red-500">Impossible de charger les données de l'utilisateur.</p>`;
-    });
-
+      // Attacher les listeners pour suppression
+      document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const formId = btn.dataset.id;
+          if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
+            fetch(`https://localhost:7005/api/Form/${formId}`, {
+              method: "DELETE",
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error("Échec de suppression");
+                alert("Formulaire supprimé.");
+                window.location.reload();
+              })
+              .catch((err) => {
+                console.error(err);
+                alert("La suppression a échoué.");
+              });
+          }
+        });
+      });
+    }
+  })
+  .catch((err) => {
+    userName.textContent = "Erreur";
+    userEmail.textContent = err.message;
+    formsList.innerHTML = `<p class="text-red-500">Impossible de charger les données de l'utilisateur.</p>`;
+  });
 
 // 🔧 Cookie helpers (au cas où)
 function deleteCookie(name) {
-    document.cookie = `${name}=; path=/; max-age=0`;
+  document.cookie = `${name}=; path=/; max-age=0`;
 }

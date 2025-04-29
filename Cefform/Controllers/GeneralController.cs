@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Cefform.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.DirectoryServices.AccountManagement;
 using System.Security.Cryptography;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace Cefform.Controllers
@@ -13,9 +14,15 @@ namespace Cefform.Controllers
     [ApiController]
     public class GeneralController : ControllerBase
     {
-        
+        private readonly CefformContext _context;
+
+        public GeneralController(CefformContext context)
+        {
+            _context = context;
+        }
+
         [HttpPost("login")]
-        public IActionResult GetLogin(string user, string pwd)
+        async public Task<IActionResult> GetLogin(string user, string pwd)
         {
             string clear = Encryption.Instance.Decrypt(pwd);
 
@@ -30,7 +37,31 @@ namespace Cefform.Controllers
                         {
                             sb.Append(hashBytes[i].ToString("X2"));
                         }
-                        return Ok(sb.ToString());
+                        DateTime expiration = DateTime.Now;
+                        expiration.AddDays(1);
+
+                        string token = sb.ToString();
+
+                        var userId = await _context.Users.AsNoTracking().Where(u => u.Username == user).Select(u => u.Iduser).FirstOrDefaultAsync();
+
+                        if (userId != null && userId != 0)
+                        {
+                            User dbUser = await _context.Users.FindAsync(userId);
+
+                            if (dbUser!= null)
+                            {
+                                dbUser.Token = token;
+                                dbUser.Expiration = expiration;
+
+                                await _context.SaveChangesAsync();
+                            }
+                        } else
+                        {
+                            _context.Users.Add(new User() { Username = user, Token = sb.ToString(), Ceff = 0, Expiration = expiration });
+                            await _context.SaveChangesAsync();
+                        }
+
+                            return Ok(sb.ToString());
                     }
                 }
 
@@ -42,6 +73,19 @@ namespace Cefform.Controllers
         public IActionResult GetPublicKey()
         {
             return Ok(Encryption.Instance.PublicKey);
+        }
+
+        [HttpGet("verifytoken")]
+        async public Task<ActionResult<uint>> VerifyToken(string token)
+        {
+            var user = await _context.Users.FromSql($"SELECT * from user WHERE token = {token}").ToListAsync();
+
+            if (user == null || user.Count < 1)
+            {
+                return NotFound();
+            }
+
+            return user[0].Iduser;
         }
     }
 }

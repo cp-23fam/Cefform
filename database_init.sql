@@ -37,10 +37,10 @@ CREATE TABLE IF NOT EXISTS `cefform`.`user` (
   `username` VARCHAR(10) NOT NULL,
   `token` VARCHAR(255) NOT NULL,
   `expiration` DATETIME NOT NULL,
-  `first_name` VARCHAR(40) NULL,
-  `last_name` VARCHAR(60) NULL,
-  `email` VARCHAR(115) NULL,
-  `ceff` TINYINT NULL,
+  `first_name` VARCHAR(40) NULL DEFAULT NULL,
+  `last_name` VARCHAR(60) NULL DEFAULT NULL,
+  `email` VARCHAR(115) NULL DEFAULT NULL,
+  `ceff` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`iduser`),
   INDEX `UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB

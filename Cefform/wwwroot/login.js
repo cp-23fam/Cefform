@@ -28,10 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!res.ok) throw new Error("Échec de la connexion");
         return res.text();
       })
-      .then((data) => {
+      .then(async (data) => {
         // Redirection ou stockage du token selon le backend
-        localStorage.setItem("token", data);
-        window.location.href = "dashboard.html";
+        const now = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
+        document.cookie = `token=${data}; expires=${now.toUTCString}; path=/;`;
+        await getUserIdByToken(data);
+        window.location.href = "/";
       })
       .catch((err) => {
         showError("Adresse email ou mot de passe incorrect.");
@@ -107,4 +109,17 @@ function str2ab(str) {
 
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint8Array(buf));
+}
+
+async function getUserIdByToken(token) {
+  const now = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
+  await fetch(
+    `https://localhost:7005/api/verifytoken?token=${encodeURIComponent(token)}`
+  )
+    .then((res) => {
+      return res.text();
+    })
+    .then((data) => {
+      document.cookie = `userId=${data}; expires=${now.toUTCString}; path=/;`;
+    });
 }
