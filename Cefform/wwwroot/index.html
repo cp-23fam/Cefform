@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cefforms</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="utils.js"></script>
     <script src="index.js" defer></script>
-</head>
+  </head>
 
-<body class="bg-white text-gray-900 font-sans">
+  <body class="bg-white text-gray-900 font-sans">
     <!-- Header -->
     <header>
-        <div class="bg-gray-400 text-white py-4 px-6 flex">
-            <h1 class="text-xl font-semibold m-auto">cefforms</h1>
-        </div>
-        <div class="space-x-2 p-6 flex justify-end" id="header-buttons">
-            <!-- Bouton connexion (par défaut, remplacé en JS si connecté) -->
-            <a href="login.html"
-                class="bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block"
-                id="login-btn">
-                Se connecter
-            </a>
-        </div>
+      <div class="bg-gray-400 text-white py-4 px-6 flex">
+        <h1 class="text-xl font-semibold m-auto">cefforms</h1>
+      </div>
+      <div class="space-x-2 p-6 flex justify-end" id="header-buttons">
+        <!-- Bouton connexion (par défaut, remplacé en JS si connecté) -->
+        <a
+          href="login.html"
+          class="bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block"
+          id="login-btn"
+        >
+          Se connecter
+        </a>
+      </div>
     </header>
 
     <!-- Grid container -->
     <main class="p-6">
-        <div id="card-container" class="flex items-center justify-center h-64">
-            <p class="text-center">Chargement...</p>
-        </div>
+      <div id="card-container" class="flex items-center justify-center h-64">
+        <p class="text-center">Chargement...</p>
+      </div>
     </main>
-
-</body>
-
+  </body>
 </html>

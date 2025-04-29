@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(async (data) => {
         // Redirection ou stockage du token selon le backend
         const now = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
-        document.cookie = `token=${data}; expires=${now.toUTCString}; path=/;`;
+        document.cookie = `token=${data}; expires=${now.toUTCString()}; path=/;`;
         await getUserIdByToken(data);
         window.location.href = "/";
       })
@@ -120,6 +120,6 @@ async function getUserIdByToken(token) {
       return res.text();
     })
     .then((data) => {
-      document.cookie = `userId=${data}; expires=${now.toUTCString}; path=/;`;
+      document.cookie = `userId=${data}; expires=${now.toUTCString()}; path=/;`;
     });
 }

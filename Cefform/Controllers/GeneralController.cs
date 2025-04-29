@@ -1,8 +1,10 @@
-﻿using Cefform.Models;
+﻿using Cefform.DTO;
+using Cefform.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using System.DirectoryServices.AccountManagement;
 using System.Security.Cryptography;
 using System.Text;
@@ -61,7 +63,7 @@ namespace Cefform.Controllers
                             await _context.SaveChangesAsync();
                         }
 
-                            return Ok(sb.ToString());
+                        return Ok(sb.ToString());
                     }
                 }
 
@@ -75,8 +77,8 @@ namespace Cefform.Controllers
             return Ok(Encryption.Instance.PublicKey);
         }
 
-        [HttpGet("verifytoken")]
-        async public Task<ActionResult<uint>> VerifyToken(string token)
+        [HttpGet("token")]
+        async public Task<ActionResult<UserDTO>> VerifyToken(string token)
         {
             var user = await _context.Users.FromSql($"SELECT * from user WHERE token = {token}").ToListAsync();
 
@@ -85,7 +87,7 @@ namespace Cefform.Controllers
                 return NotFound();
             }
 
-            return user[0].Iduser;
+            return UserDTO.fromUser(user[0]);
         }
     }
 }
