@@ -1,6 +1,6 @@
 const container = document.getElementById("card-container");
 
-fetch("https://localhost:7005/form/list")
+fetch("https://localhost:7005/api/form/list")
   .then((res) => res.json())
   .then((data) => {
     container.innerHTML = ``;

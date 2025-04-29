@@ -8,7 +8,7 @@ const quizForm = document.getElementById("quiz-form");
 const colorBar = document.getElementById("color-bar");
 const submitButton = document.getElementById("submit-button");
 
-fetch("https://localhost:7005/form/" + id.toString())
+fetch("https://localhost:7005/api/form/" + id.toString())
     .then((res) => res.json())
     .then((form) => {
         colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl ${getColorClass(form.user.ceff)}`;
