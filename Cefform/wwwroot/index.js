@@ -76,7 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
         userButton.href = `profile.html?id=${user.iduser}`;
         userButton.className =
           "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
-        userButton.textContent = `${user.firstName} ${user.lastName}`;
+        if (user.firstName != null && user.lastName != null) {
+          userButton.textContent = `${user.firstName} ${user.lastName}`;
+        } else {
+          userButton.textContent = `${user.username}`;
+        }
 
         // Bouton "Créer un formulaire"
         const createFormButton = document.createElement("a");
