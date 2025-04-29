@@ -14,6 +14,8 @@ async function getSelfInfosByToken() {
     return res.json();
   });
 
+  console.log(infos);
+
   return infos;
 }
 

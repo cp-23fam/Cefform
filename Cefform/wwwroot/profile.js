@@ -38,18 +38,6 @@ function getColorClassFromCeff(color) {
     default:
       return "bg-gray-400";
   }
-  switch (color) {
-    case 0:
-      return "bg-green-300";
-    case 1:
-      return "bg-blue-400";
-    case 2:
-      return "bg-purple-400";
-    case 3:
-      return "bg-cyan-400";
-    default:
-      return "bg-gray-400";
-  }
 }
 
 // Fonction pour traduire le numéro CEFF en texte
@@ -63,7 +51,7 @@ function getCeffText(ceff) {
   return ceffNames[ceff] || "Non spécifié";
 }
 
-user = getSelfInfosByToken();
+user = await getSelfInfosByToken();
 // Mise à jour du contenu
 if (user.firstName != null && user.lastName != null) {
   userName.textContent = `${user.firstName} ${user.lastName}`;
