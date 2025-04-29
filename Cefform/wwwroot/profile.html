@@ -1,45 +1,91 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>cefforms - Utilisateur</title>
     <script defer src="profile.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  </head>
 
-<body class="bg-gray-100 text-gray-800">
-    <div class="max-w-4xl mx-auto mt-10 relative bg-white p-6 rounded-xl shadow-xl">
-        <!-- Barre latérale colorée -->
-        <div id="color-bar" class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-green-400"></div>
+  <body class="bg-gray-100 text-gray-800">
+    <div
+      class="max-w-4xl mx-auto mt-10 relative bg-white p-6 rounded-xl shadow-xl"
+    >
+      <!-- Barre latérale colorée -->
+      <div
+        id="color-bar"
+        class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-green-400"
+      ></div>
 
-        <!-- En-tête avec retour + logout -->
-        <div class="flex justify-between items-center mb-4">
-            <!-- Bouton retour -->
-            <a href="index.html"
-                class="text-sm bg-gray-100 text-gray-800 px-4 py-2 rounded hover:bg-gray-200 transition">
-                ← Retour à l’accueil
-            </a>
+      <!-- En-tête avec retour + logout -->
+      <div class="flex justify-between items-center mb-4">
+        <!-- Bouton retour -->
+        <a
+          href="index.html"
+          class="text-sm bg-gray-100 text-gray-800 px-4 py-2 rounded hover:bg-gray-200 transition"
+        >
+          ← Retour à l'accueil
+        </a>
 
-            <!-- Bouton déconnexion -->
-            <button id="logout" class="text-sm bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200 transition">
-                Se déconnecter
-            </button>
-        </div>
+        <!-- Bouton déconnexion -->
+        <button
+          id="logout"
+          class="text-sm bg-red-100 text-red-700 px-4 py-2 rounded hover:bg-red-200 transition"
+        >
+          Se déconnecter
+        </button>
+      </div>
 
-        <!-- Nom et email -->
-        <div class="mb-6">
+      <!-- Nom et email -->
+      <div class="mb-6">
+        <div class="flex justify-between items-start">
+          <div>
             <h1 class="text-3xl font-bold" id="user-name">Chargement...</h1>
             <p class="text-gray-600" id="user-email"></p>
+          </div>
+          <a
+            href="#"
+            id="edit-profile-btn"
+            class="text-sm bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200 transition"
+          >
+            Éditer le profil
+          </a>
         </div>
+      </div>
 
-        <hr class="my-6 border-gray-300">
+      <hr class="my-6 border-gray-300" />
 
-        <h2 class="text-xl font-semibold mb-2">Formulaires créés</h2>
-        <div id="forms-list" class="space-y-4">
-            <p>Chargement des formulaires...</p>
+      <!-- Section Informations personnelles -->
+      <div class="mb-8">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold">Informations personnelles</h2>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Prénom</p>
+            <p id="user-firstname" class="font-medium">-</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Nom</p>
+            <p id="user-lastname" class="font-medium">-</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Nom d'utilisateur</p>
+            <p id="user-username" class="font-medium">-</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">CEFF</p>
+            <p id="user-ceff" class="font-medium">-</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-6 border-gray-300" />
+
+      <h2 class="text-xl font-semibold mb-2">Formulaires créés</h2>
+      <div id="forms-list" class="space-y-4">
+        <p>Chargement des formulaires...</p>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

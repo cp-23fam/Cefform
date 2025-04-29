@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>cefforms - Éditer le profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="edit-profile.js"></script>
+  </head>
+
+  <body class="bg-gray-100 text-gray-800">
+    <div class="max-w-2xl mx-auto mt-10 bg-white p-6 rounded-xl shadow-xl">
+      <!-- En-tête -->
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Éditer le profil</h1>
+        <a
+          href="profile.html?id=USERID"
+          id="cancel-btn"
+          class="text-sm bg-gray-100 text-gray-800 px-4 py-2 rounded hover:bg-gray-200 transition"
+        >
+          Annuler
+        </a>
+      </div>
+
+      <!-- Formulaire d'édition -->
+      <form id="edit-profile-form" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label
+              for="firstname"
+              class="block text-sm font-medium text-gray-700"
+              >Prénom</label
+            >
+            <input
+              type="text"
+              id="firstname"
+              name="firstname"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label
+              for="lastname"
+              class="block text-sm font-medium text-gray-700"
+              >Nom</label
+            >
+            <input
+              type="text"
+              id="lastname"
+              name="lastname"
+              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Email</label
+          >
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label for="ceff" class="block text-sm font-medium text-gray-700"
+            >CEFF</label
+          >
+          <select
+            id="ceff"
+            name="ceff"
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="0">CEFF Commerce</option>
+            <option value="1">CEFF Industrie</option>
+            <option value="2">CEFF Santé-Social</option>
+            <option value="3">CEFF Artisanat</option>
+          </select>
+        </div>
+
+        <div class="pt-4">
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Enregistrer les modifications
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
