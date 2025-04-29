@@ -52,8 +52,6 @@ function createCard(form) {
     <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg ${getColorClass(
       form.ceff
     )}"></div>
-      form.ceff
-    )}"></div>
   `;
 
   link.appendChild(card);
@@ -68,14 +66,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (infos != null) {
     const userButton = document.createElement("a");
-    userButton.href = `profile.html?id=${infos.iduser}`;
+    userButton.href = `profile.html`;
     userButton.className =
       "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
-    userButton.textContent = `${infos.firstName} ${infos.lastName}`;
+    if (infos.firstName != "" && infos.lastName != "") {
+      userButton.textContent = `${infos.firstName} ${infos.lastName}`;
+    } else {
+      userButton.textContent = `${infos.username}`;
+    }
 
     // Bouton "Créer un formulaire"
     const createFormButton = document.createElement("a");
-    createFormButton.href = `create.html?ceff=${infos.ceff}`;
+    createFormButton.href = `create.html`;
     createFormButton.className = `${getColorButtonClass(
       infos.ceff
     )} text-white px-4 py-1 rounded transition hidden lg:block`;
