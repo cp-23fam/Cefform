@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Bouton "Créer un formulaire"
         const createFormButton = document.createElement("a");
-        createFormButton.href = "create.html";
+        createFormButton.href = `create.html?ceff=${user.ceff}`;
         createFormButton.className = `${getColorButtonClass(user.ceff)} text-white px-4 py-1 rounded transition hidden lg:block`;
         createFormButton.textContent = "Créer un formulaire";
 
@@ -95,7 +95,7 @@ function getCookie(name) {
   return cookie ? decodeURIComponent(cookie.split("=")[1]) : null;
 }
 
-function getColorClassFromCeff(color) {
+function getMainColorFromCeff(color) {
   switch (color) {
     case 0:
       return "bg-green-300";

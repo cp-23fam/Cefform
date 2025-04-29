@@ -18,7 +18,7 @@ logoutBtn.addEventListener("click", () => {
 });
 
 // Fonction utilitaire : couleur Tailwind selon CEFF
-function getColorClassFromCeff(color) {
+function getMainColorFromCeff(color) {
     switch (color) {
         case 0:
             return "bg-green-300";
@@ -46,7 +46,7 @@ fetch(apiUrl)
 
         // Couleur latérale
         const colorBar = document.getElementById("color-bar");
-        colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl ${getColorClassFromCeff(user.ceff)}`;
+        colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl ${getMainColorFromCeff(user.ceff)}`;
 
         // Affichage des formulaires
         if (user.forms.length === 0) {
