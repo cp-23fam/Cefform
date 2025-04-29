@@ -52,3 +52,37 @@ function createCard(form) {
   link.appendChild(card);
   return link;
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const loginButton = document.querySelector("a[href='login.html']");
+
+  const userId = getCookie("userId");
+
+  if (userId) {
+    fetch(`https://localhost:7005/api/Users/${userId}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Erreur lors du chargement de l'utilisateur");
+        return res.json();
+      })
+      .then(user => {
+        // Création du bouton utilisateur
+        const userButton = document.createElement("a");
+        userButton.href = `profile.html?id=${user.iduser}`;
+        userButton.className = "bg-white text-gray-700 px-4 py-1 rounded border border-gray-300 hover:bg-gray-100 hidden lg:block";
+        userButton.textContent = `${user.firstName} ${user.lastName}`;
+
+        // Remplace le bouton login
+        loginButton.replaceWith(userButton);
+      })
+      .catch(err => {
+        console.error("Impossible de charger les infos utilisateur :", err);
+      });
+  }
+});
+
+// Fonction pour lire un cookie par nom
+function getCookie(name) {
+  const cookie = document.cookie.split("; ").find(c => c.startsWith(name + "="));
+  return cookie ? cookie.split("=")[1] : null;
+}
