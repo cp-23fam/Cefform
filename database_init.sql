@@ -34,11 +34,15 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cefform`.`user` (
   `iduser` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `first_name` VARCHAR(40) NOT NULL,
-  `last_name` VARCHAR(60) NOT NULL,
-  `email` VARCHAR(115) NOT NULL,
-  `ceff` TINYINT NOT NULL,
-  PRIMARY KEY (`iduser`))
+  `username` VARCHAR(10) NOT NULL,
+  `token` VARCHAR(255) NOT NULL,
+  `expiration` DATETIME NOT NULL,
+  `first_name` VARCHAR(40) NULL,
+  `last_name` VARCHAR(60) NULL,
+  `email` VARCHAR(115) NULL,
+  `ceff` TINYINT NULL,
+  PRIMARY KEY (`iduser`),
+  INDEX `UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 
