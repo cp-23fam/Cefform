@@ -91,7 +91,7 @@ async function loadUserInfos() {
       btn.addEventListener("click", () => {
         const formId = btn.dataset.id;
         if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-          fetch(`https://localhost:7005/api/Form/${formId}`, {
+          fetch(`${apiUrl}/form/${formId}`, {
             method: "DELETE",
           })
             .then((res) => {
