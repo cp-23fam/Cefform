@@ -8,13 +8,13 @@ const quizForm = document.getElementById("quiz-form");
 const colorBar = document.getElementById("color-bar");
 const submitButton = document.getElementById("submit-button");
 
-fetch("https://localhost:7005/api/form/" + id.toString())
+fetch(`${apiUrl}/form/${id.toString()}`)
   .then((res) => res.json())
   .then((form) => {
-    colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl ${getColorClass(
+    colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
       form.user.ceff
     )}`;
-    submitButton.className += ` ${getColorButtonClass(form.user.ceff)}`;
+    submitButton.className += ` ${getMainColorButtonFromCeff(form.user.ceff)}`;
 
     if (form == null) {
       container.innerHTML = `
@@ -66,34 +66,3 @@ fetch("https://localhost:7005/api/form/" + id.toString())
       });
     }
   });
-
-// Fonction qui donne la couleur en classe Tailwind
-function getColorClass(color) {
-  switch (color) {
-    case 0:
-      return "bg-green-300";
-    case 1:
-      return "bg-blue-400";
-    case 2:
-      return "bg-purple-400";
-    case 3:
-      return "bg-cyan-400";
-    default:
-      return "bg-gray-400";
-  }
-}
-
-function getColorButtonClass(color) {
-  switch (color) {
-    case 0:
-      return "bg-green-500 hover:bg-green-600";
-    case 1:
-      return "bg-blue-500 hover:bg-blue-600";
-    case 2:
-      return "bg-purple-500 hover:bg-purple-600";
-    case 3:
-      return "bg-cyan-500 hover:bg-cyan-600";
-    default:
-      return "bg-gray-500 hover:bg-gray-600";
-  }
-}

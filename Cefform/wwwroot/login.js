@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const url = encodeURIComponent(encrypted);
     // Simule une requête d'authentification
-    fetch(`https://localhost:7005/api/login?user=${email}&pwd=${url}`, {
+    fetch(`${apiUrl}/login?user=${email}&pwd=${url}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,11 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function getPublicKeyAndEncrypt(message) {
-  const key = await fetch("https://localhost:7005/api/publickey").then(
-    (res) => {
-      return res.text();
-    }
-  );
+  const key = await fetch(`${apiUrl}/publickey`).then((res) => {
+    return res.text();
+  });
 
   try {
     const pub = await importPublicKey(key);
@@ -113,9 +111,7 @@ function ab2str(buf) {
 
 async function getUserIdByToken(token) {
   const now = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
-  await fetch(
-    `https://localhost:7005/api/verifytoken?token=${encodeURIComponent(token)}`
-  )
+  await fetch(`${apiUrl}/verifytoken?token=${encodeURIComponent(token)}`)
     .then((res) => {
       return res.text();
     })

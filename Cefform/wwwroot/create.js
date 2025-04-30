@@ -2,29 +2,33 @@ const sectionsContainer = document.getElementById("sections-container");
 const addSectionBtn = document.getElementById("add-section-btn");
 
 const params = new URLSearchParams(window.location.search);
-const ceff = getSelfInfosByToken().ceff;
 
 const titleBar = document.getElementById("title-lbl");
-const descritpionBar = document.getElementById("description-lbl");
+const descriptionBar = document.getElementById("description-lbl");
 const colorBar = document.getElementById("color-bar");
 const createBtn = document.getElementById("create-btn");
 const cancelBtn = document.getElementById("cancel-btn");
 
-titleBar.className = `w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-${getMainColorFromCeff(
-  ceff
-)}`;
-descritpionBar.className = `w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-${getMainColorFromCeff(
-  ceff
-)}`;
-colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
-  ceff
-)}`;
-createBtn.className = `${getColorButtonClass(
-  ceff
-)} text-white px-6 py-2 rounded transition`;
-cancelBtn.className = `px-6 py-2 rounded border border-${getMainColorFromCeff(
-  ceff
-)} text-gray-700 hover:bg-gray-100 transition`;
+async function loadCeffComponents() {
+  const infos = await getSelfInfosByToken();
+  titleBar.className = `w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-${getMainColorFromCeff(
+    infos.ceff
+  )}`;
+  descriptionBar.className = `w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-${getMainColorFromCeff(
+    infos.ceff
+  )}`;
+  colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
+    infos.ceff
+  )}`;
+  createBtn.className = `${getMainColorButtonFromCeff(
+    infos.ceff
+  )} text-white px-6 py-2 rounded transition`;
+  cancelBtn.className = `px-6 py-2 rounded border border-${getMainColorFromCeff(
+    infos.ceff
+  )} text-gray-700 hover:bg-gray-100 transition`;
+}
+
+loadCeffComponents();
 
 // Types disponibles
 const questionTypes = [
@@ -84,11 +88,11 @@ addSectionBtn.addEventListener("click", () => {
 
     questionsContainer.appendChild(questionDiv);
 
-    const typeBtns = questionDiv.querySelectorAll(".type-btn");
+    const typeButtons = questionDiv.querySelectorAll(".type-btn");
     const preview = questionDiv.querySelector(".answer-preview");
     const optionsContainer = questionDiv.querySelector(".options-container");
 
-    typeBtns.forEach((btn) => {
+    typeButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
         const selectedType = btn.getAttribute("data-type");
         preview.textContent = `Type : ${selectedType}`;
@@ -147,33 +151,3 @@ addSectionBtn.addEventListener("click", () => {
     sectionDiv.remove();
   });
 });
-
-function getMainColorFromCeff(color) {
-  switch (color) {
-    case 0:
-      return "green-300";
-    case 1:
-      return "blue-400";
-    case 2:
-      return "purple-400";
-    case 3:
-      return "cyan-400";
-    default:
-      return "gray-400";
-  }
-}
-
-function getColorButtonClass(color) {
-  switch (color) {
-    case 0:
-      return "bg-green-500 hover:bg-green-600";
-    case 1:
-      return "bg-blue-500 hover:bg-blue-600";
-    case 2:
-      return "bg-purple-500 hover:bg-purple-600";
-    case 3:
-      return "bg-cyan-500 hover:bg-cyan-600";
-    default:
-      return "bg-gray-500 hover:bg-gray-600";
-  }
-}

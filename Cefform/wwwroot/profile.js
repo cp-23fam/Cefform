@@ -1,8 +1,8 @@
 // Elements HTML à remplir
 const userName = document.getElementById("user-name");
 const userEmail = document.getElementById("user-email");
-const userFirstname = document.getElementById("user-firstname");
-const userLastname = document.getElementById("user-lastname");
+const userFirstName = document.getElementById("user-firstname");
+const userLastName = document.getElementById("user-lastname");
 const userUsername = document.getElementById("user-username");
 const userCeff = document.getElementById("user-ceff");
 const formsList = document.getElementById("forms-list");
@@ -19,22 +19,6 @@ logoutBtn.addEventListener("click", () => {
 editProfileBtn.addEventListener("click", () => {
   window.location.href = `edit-profile.html`;
 });
-
-// Fonction utilitaire : couleur Tailwind selon CEFF
-function getColorClassFromCeff(color) {
-  switch (color) {
-    case 0:
-      return "bg-green-300";
-    case 1:
-      return "bg-blue-400";
-    case 2:
-      return "bg-purple-400";
-    case 3:
-      return "bg-cyan-400";
-    default:
-      return "bg-gray-400";
-  }
-}
 
 // Fonction pour traduire le numéro CEFF en texte
 function getCeffText(ceff) {
@@ -58,7 +42,7 @@ async function loadUserInfos() {
   if (user.email != "") {
     userEmail.textContent = user.email;
   } else {
-    userEmail.textContent = `aucun email enrengistré`;
+    userEmail.textContent = `aucun email enregistré`;
   }
 
   userUsername.innerHTML = user.username;
@@ -66,7 +50,7 @@ async function loadUserInfos() {
 
   // Couleur latérale
   const colorBar = document.getElementById("color-bar");
-  colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl ${getColorClassFromCeff(
+  colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
     user.ceff
   )}`;
 
@@ -103,7 +87,7 @@ async function loadUserInfos() {
       btn.addEventListener("click", () => {
         const formId = btn.dataset.id;
         if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-          fetch(`https://localhost:7005/api/Form/${formId}`, {
+          fetch(`${apiUrl}/form/${formId}`, {
             method: "DELETE",
           })
             .then((res) => {

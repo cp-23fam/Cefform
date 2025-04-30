@@ -1,6 +1,6 @@
 const container = document.getElementById("card-container");
 
-fetch("https://localhost:7005/api/form/list")
+fetch(`${apiUrl}/form/list`)
   .then((res) => res.json())
   .then((data) => {
     container.innerHTML = ``;
@@ -19,22 +19,6 @@ fetch("https://localhost:7005/api/form/list")
     container.innerHTML = `<p class="text-red-500 text-center">Impossible de charger les formulaires.</p>`;
   });
 
-// Fonction pour choisir la couleur latérale
-function getColorClass(color) {
-  switch (color) {
-    case 0:
-      return "bg-green-300";
-    case 1:
-      return "bg-blue-400";
-    case 2:
-      return "bg-purple-400";
-    case 3:
-      return "bg-cyan-400";
-    default:
-      return "bg-gray-400";
-  }
-}
-
 function createCard(form) {
   const link = document.createElement("a");
   link.href = `form.html?id=${form.id}`;
@@ -49,7 +33,7 @@ function createCard(form) {
       <h2 class="text-lg font-semibold">${form.name}</h2>
       <p class="text-sm text-gray-600">${form.description}</p>
     </div>
-    <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg ${getColorClass(
+    <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg bg-${getMainColorFromCeff(
       form.ceff
     )}"></div>
   `;
@@ -91,21 +75,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Fonction utilitaire pour lire un cookie par nom
-
-function getMainColorFromCeff(color) {
-  switch (color) {
-    case 0:
-      return "bg-green-300";
-    case 1:
-      return "bg-blue-400";
-    case 2:
-      return "bg-purple-400";
-    case 3:
-      return "bg-cyan-400";
-    default:
-      return "bg-gray-400";
-  }
-}
 
 function getColorButtonClass(color) {
   switch (color) {
