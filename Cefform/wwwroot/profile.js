@@ -1,7 +1,3 @@
-// Récupérer l'ID de l'utilisateur depuis l'URL : ?id=1
-const params = new URLSearchParams(window.location.search);
-const userId = params.get("id");
-
 // Elements HTML à remplir
 const userName = document.getElementById("user-name");
 const userEmail = document.getElementById("user-email");
@@ -15,13 +11,13 @@ const editProfileBtn = document.getElementById("edit-profile-btn");
 // Déconnexion
 const logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
-  deleteCookie("token"); // Pour rester cohérent même si on n'utilise pas de cookie ici
+  deleteCookie("token");
   window.location.href = "/";
 });
 
 // Redirection vers la page d'édition
 editProfileBtn.addEventListener("click", () => {
-  window.location.href = `edit-profile.html?id=${userId}`;
+  window.location.href = `edit-profile.html`;
 });
 
 // Fonction utilitaire : couleur Tailwind selon CEFF

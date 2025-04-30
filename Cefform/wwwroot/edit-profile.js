@@ -2,46 +2,45 @@
 const params = new URLSearchParams(window.location.search);
 const userId = params.get("id");
 
-// Point d'accès à l'API
-const apiUrl = `https://localhost:7005/api/Users/${userId}`;
+// Champ Text
+const firstName = document.getElementById("firstname");
+const lastName = document.getElementById("lastname");
+const email = document.getElementById("email");
+const ceff = document.getElementById("ceff");
+const editProfileLbl = document.getElementById("edit-profile-lbl");
 
 // Éléments du formulaire
 const editForm = document.getElementById("edit-profile-form");
 const cancelBtn = document.getElementById("cancel-btn");
 
 // Mettre à jour le lien d'annulation
-cancelBtn.href = `profile.html?id=${userId}`;
+cancelBtn.href = `profile.html`;
 
-// Charger les données de l'utilisateur
-fetch(apiUrl)
-  .then((res) => {
-    if (!res.ok) throw new Error("Utilisateur introuvable");
-    return res.json();
-  })
-  .then((user) => {
-    document.getElementById("firstname").value = user.firstName || "";
-    document.getElementById("lastname").value = user.lastName || "";
-    document.getElementById("email").value = user.email || "";
-    document.getElementById("ceff").value = user.ceff || 0;
-  })
-  .catch((err) => {
-    console.error(err);
-    alert("Impossible de charger les données de l'utilisateur");
-  });
+async function loadUserInfos() {
+  user = await getSelfInfosByToken();
+  // Mise à jour du contenu
+  firstName.value = user.firstName;
+  lastName.value = user.lastName;
+  email.value = user.email;
+  ceff.value = user.ceff;
+
+  editProfileLbl.innerHTML = `Éditer le profil (${user.username})`;
+}
 
 // Gérer la soumission du formulaire
 editForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const formData = {
-    firstName: document.getElementById("firstname").value,
-    lastName: document.getElementById("lastname").value,
-    username: document.getElementById("username").value,
-    email: document.getElementById("email").value || null,
-    ceff: parseInt(document.getElementById("ceff").value),
+    firstName: firstName.value,
+    lastName: lastName.value,
+    username: user.username,
+    email: email.value,
+    ceff: ceff.value,
+    token: getCookie("token"),
   };
 
-  fetch(apiUrl, {
+  fetch(`${apiUrl}/Users/${user.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -54,10 +53,12 @@ editForm.addEventListener("submit", (e) => {
     })
     .then(() => {
       alert("Profil mis à jour avec succès");
-      window.location.href = `profile.html?id=${userId}`;
+      window.location.href = `profile.html`;
     })
     .catch((err) => {
       console.error(err);
       alert("Erreur lors de la mise à jour du profil");
     });
 });
+
+loadUserInfos();
