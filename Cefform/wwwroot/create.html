@@ -1,53 +1,75 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>cefforms - Création</title>
+    <script src="utils.js"></script>
     <script src="create.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  </head>
 
-<body class="bg-gray-100">
-    <div class="relative max-w-3xl mt-10 mx-auto bg-white p-6 rounded-xl shadow-md" id="form-editor">
-        <!-- Couleur latérale -->
-        <div class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-purple-400" id="color-bar"></div>
+  <body class="bg-gray-100">
+    <div
+      class="relative max-w-3xl mt-10 mx-auto bg-white p-6 rounded-xl shadow-md"
+      id="form-editor"
+    >
+      <!-- Couleur latérale -->
+      <div
+        class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-purple-400"
+        id="color-bar"
+      ></div>
 
-        <!-- Titre et description -->
-        <div class="mb-6">
-            <label class="block font-semibold text-gray-700 mb-1">Titre :</label>
-            <input type="text" placeholder="Entrer un titre..."
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400" id="title-lbl">
-        </div>
-        <div class="mb-6">
-            <label class="block font-semibold text-gray-700 mb-1">Description :</label>
-            <input type="text" placeholder="Entrer une description..."
-                class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400" id="description-lbl">
-        </div>
+      <!-- Titre et description -->
+      <div class="mb-6">
+        <label class="block font-semibold text-gray-700 mb-1">Titre :</label>
+        <input
+          type="text"
+          placeholder="Entrer un titre..."
+          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+          id="title-lbl"
+        />
+      </div>
+      <div class="mb-6">
+        <label class="block font-semibold text-gray-700 mb-1"
+          >Description :</label
+        >
+        <input
+          type="text"
+          placeholder="Entrer une description..."
+          class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+          id="description-lbl"
+        />
+      </div>
 
-        <!-- Zone des sections dynamiques -->
-        <div id="sections-container" class="space-y-4"></div>
+      <!-- Zone des sections dynamiques -->
+      <div id="sections-container" class="space-y-4"></div>
 
-        <!-- Bouton pour ajouter une section -->
-        <div class="mt-4">
-            <button id="add-section-btn"
-                class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded text-sm font-medium transition">
-                + Ajouter une section
-            </button>
-        </div>
+      <!-- Bouton pour ajouter une section -->
+      <div class="mt-4">
+        <button
+          id="add-section-btn"
+          class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded text-sm font-medium transition"
+        >
+          + Ajouter une section
+        </button>
+      </div>
 
-        <!-- Boutons finaux -->
-        <div class="mt-6 flex justify-between">
-            <a href="index.html"
-                class="px-6 py-2 rounded border border-purple-400 text-gray-700 hover:bg-gray-100 transition" id="cancel-btn">
-                Annuler
-            </a>
-            <button class="bg-grey-500 hover:bg-purple-400 text-white px-6 py-2 rounded transition" id="create-btn">
-                Créer
-            </button>
-        </div>
+      <!-- Boutons finaux -->
+      <div class="mt-6 flex justify-between">
+        <a
+          href="index.html"
+          class="px-6 py-2 rounded border border-purple-400 text-gray-700 hover:bg-gray-100 transition"
+          id="cancel-btn"
+        >
+          Annuler
+        </a>
+        <button
+          class="bg-grey-500 hover:bg-purple-400 text-white px-6 py-2 rounded transition"
+          id="create-btn"
+        >
+          Créer
+        </button>
+      </div>
     </div>
-
-</body>
-
+  </body>
 </html>
