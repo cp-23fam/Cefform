@@ -34,13 +34,12 @@ editForm.addEventListener("submit", (e) => {
   const formData = {
     firstName: firstName.value,
     lastName: lastName.value,
-    username: user.username,
     email: email.value,
     ceff: ceff.value,
     token: getCookie("token"),
   };
 
-  fetch(`${apiUrl}/Users/${user.id}`, {
+  fetch(`${apiUrl}/user/${user.id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

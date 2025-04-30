@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Cefform.Models;
+using Cefform.DTO;
 
 namespace Cefform.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -33,8 +34,6 @@ namespace Cefform.Controllers
         {
             var user = await _context.Users.FindAsync(id);
 
-            await _context.Forms.FromSql($"SELECT * FROM form WHERE user_iduser = {id}").ToListAsync();
-
             if (user == null)
             {
                 return NotFound();
@@ -43,62 +42,42 @@ namespace Cefform.Controllers
             return user;
         }
 
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(uint id, User user)
+        [HttpGet("{id}/form")]
+        public async Task<ActionResult<List<Form>>> GetUserForms(uint id)
         {
-            if (id != user.Iduser)
-            {
-                return BadRequest();
-            }
+            var forms = await _context.Forms.FromSql($"SELECT * FROM form WHERE user_iduser = {id}").ToListAsync();
 
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Iduser }, user);
-        }
-
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(uint id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            if (forms == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            return forms.ToList();
+        }
+
+        // PUT: api/Users/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PatchUser(uint id, UserDTO patch)
+        {
+            var userId = await _context.Users.AsNoTracking().Where(u => u.Token == patch.Token).Select(u => u.Iduser).FirstOrDefaultAsync();
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            if (patch.Token != user.Token)
+            {
+                return BadRequest();
+            }
+
+            UserDTO.toUser(patch, user);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(user);
+
         }
 
         private bool UserExists(uint id)
