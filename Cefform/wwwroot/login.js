@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("login-form");
+  const spinner = document.getElementById("loading-spinner");
   const errorMsg = document.getElementById("error-msg");
 
   form.addEventListener("submit", async (e) => {
+    spinner.classList.remove("hidden");
     e.preventDefault(); // empêche le rechargement de la page
 
     const email = document.getElementById("text").value.trim();
@@ -119,3 +121,5 @@ async function getUserIdByToken(token) {
       document.cookie = `userId=${data}; expires=${now.toUTCString()}; path=/;`;
     });
 }
+
+spinner.classList.add("hidden");

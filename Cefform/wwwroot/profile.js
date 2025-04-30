@@ -39,6 +39,12 @@ async function loadUserInfos() {
   } else {
     userName.textContent = `${user.username}`;
   }
+  if (user.firstName != "") {
+    userFirstName.textContent = user.firstName;
+  }
+  if (user.lastName != "") {
+    userLastName.textContent = user.lastName;
+  }
   if (user.email != "") {
     userEmail.textContent = user.email;
   } else {
