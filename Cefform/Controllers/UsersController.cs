@@ -21,27 +21,6 @@ namespace Cefform.Controllers
             _context = context;
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            return await _context.Users.ToListAsync();
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(uint id)
-        {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
         [HttpGet("{id}/form")]
         public async Task<ActionResult<List<Form>>> GetUserForms(uint id)
         {
@@ -70,7 +49,7 @@ namespace Cefform.Controllers
 
             if (patch.Token != user.Token)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
             UserDTO.toUser(patch, user);
@@ -78,11 +57,6 @@ namespace Cefform.Controllers
 
             return Ok(user);
 
-        }
-
-        private bool UserExists(uint id)
-        {
-            return _context.Users.Any(e => e.Iduser == id);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Cefform.DTO
     {
         public uint Id { get; set; }
         public string? Username { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
+        public string Email { get; set; } = "";
         public int Ceff {  get; set; }
         public string? Token { get; set; }
 
@@ -22,7 +22,7 @@ namespace Cefform.DTO
         public static User toUser(UserDTO dto, User? user = null) { 
             if (user == null)
             {
-                return new User() { Iduser = dto.Id, Username = dto.Username, FirstName = dto.FirstName, LastName = dto.LastName, Email = dto.Email, Ceff = Convert.ToSByte(dto.Ceff) };
+                return new User() { Iduser = dto.Id, Username = dto.Username ?? "", FirstName = dto.FirstName, LastName = dto.LastName, Email = dto.Email, Ceff = Convert.ToSByte(dto.Ceff) };
             } else
             {
                 user.Username = dto.Username ?? user.Username;

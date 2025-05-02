@@ -28,7 +28,7 @@ namespace Cefform.Controllers
         {
             string clear = Encryption.Instance.Decrypt(pwd);
 
-            using (PrincipalContext pc = new PrincipalContext(ContextType.Domain, "INTRA.CEFF.CH"))
+            using (PrincipalContext pc = new(ContextType.Domain, "INTRA.CEFF.CH"))
                 if (pc.ValidateCredentials(user, clear)) {
                     using (SHA512 sha512 = SHA512.Create())
                     {
@@ -39,18 +39,17 @@ namespace Cefform.Controllers
                         {
                             sb.Append(hashBytes[i].ToString("X2"));
                         }
-                        DateTime expiration = DateTime.Now;
-                        expiration.AddDays(1);
+                        DateTime expiration = DateTime.Now.AddDays(1.0);
 
                         string token = sb.ToString();
 
                         var userId = await _context.Users.AsNoTracking().Where(u => u.Username == user).Select(u => u.Iduser).FirstOrDefaultAsync();
 
-                        if (userId != null && userId != 0)
+                        if (userId != 0)
                         {
-                            User dbUser = await _context.Users.FindAsync(userId);
+                            User? dbUser = await _context.Users.FindAsync(userId);
 
-                            if (dbUser!= null)
+                            if (dbUser != null)
                             {
                                 dbUser.Token = token;
                                 dbUser.Expiration = expiration;
