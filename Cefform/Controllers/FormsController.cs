@@ -41,7 +41,7 @@ namespace Cefform.Controllers
 
                 form.UserIduserNavigation = user;
 
-                output.Add(new FormListDTO { Name = form.Name, Description = form.Description, Id = form.Idform, Author = form.UserIduserNavigation!.Email, Ceff = form.UserIduserNavigation.Ceff });
+                output.Add(new FormListDTO { Name = form.Name, Description = form.Description, Id = form.Idform, Author = form.UserIduserNavigation!.Email ?? form.UserIduserNavigation!.Username, Ceff = form.UserIduserNavigation.Ceff });
             }
 
             return output;
@@ -77,13 +77,18 @@ namespace Cefform.Controllers
         }
 
         [HttpPatch("{id}/publish")]
-        public async Task<IActionResult> PublishForm(uint id)
+        public async Task<IActionResult> PublishForm(uint id, string token)
         {
             var form = await _context.Forms.FindAsync(id);
 
             if (form == null)
             {
                 return NotFound();
+            }
+
+            if (form.UserIduserNavigation!.Token != token)
+            {
+                return Unauthorized();
             }
 
             form.Published = 1;
@@ -94,13 +99,18 @@ namespace Cefform.Controllers
         }
         
         [HttpPatch("{id}/hide")]
-        public async Task<IActionResult> HideForm(uint id)
+        public async Task<IActionResult> HideForm(uint id, string token)
         {
             var form = await _context.Forms.FindAsync(id);
 
             if (form == null)
             {
                 return NotFound();
+            }
+
+            if (form.UserIduserNavigation!.Token != token)
+            {
+                return Unauthorized();
             }
 
             form.Published = 0;
@@ -112,7 +122,7 @@ namespace Cefform.Controllers
 
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Form>> PostForm(Form form)
+        public async Task<ActionResult<Form>> PostForm(Form form, string token)
         {
             var user = await _context.Users.FindAsync(form.UserIduser);
             if (user == null)
@@ -122,20 +132,38 @@ namespace Cefform.Controllers
 
             form.UserIduserNavigation = user;
 
+            if (user.Token != token)
+            {
+                Unauthorized();
+            }
+
             _context.Forms.Add(form);
+
+            var dbForm = _context.Forms.Last();
+
+            foreach (Question question in form.Questions)
+            {
+                if (question.Idquestion != dbForm.Idform) return BadRequest();
+            }
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetForm", new { id = form.Idform }, form);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteForm(uint id)
+        public async Task<IActionResult> DeleteForm(uint id, string token)
         {
 
             var form = await _context.Forms.FindAsync(id);
             if (form == null)
             {
                 return NotFound();
+            }
+
+            if (form.UserIduserNavigation!.Token != token)
+            {
+                return Unauthorized();
             }
 
             _context.Forms.Remove(form);
