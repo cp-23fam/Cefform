@@ -6,6 +6,54 @@
     <script src="utils.js"></script>
     <script src="create.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Templates -->
+    <template id="page-template">
+      <input
+        type="text"
+        placeholder="Nom de section..."
+        class="border-b border-gray-400 w-full mb-2 focus:outline-none"
+      />
+      <div class="questions-container space-y-2 mb-4"></div>
+      <button class="add-question-btn text-sm text-gray-700 hover:underline">
+        + Ajouter une question
+      </button>
+    </template>
+
+    <template id="question-template">
+      <div class="flex items-center justify-between mb-2 gap-2">
+        <input
+          type="text"
+          placeholder="Intitulé de la question..."
+          class="flex-grow min-w-[200px] px-2 py-1 rounded border focus:outline-none"
+        />
+        <button
+          class="delete-question border border-red-500 text-red-500 px-2 py-1 rounded hover:bg-red-100 transition"
+          title="Supprimer la question"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 
+              0H7m4-4h2a2 2 0 012 2v2H7V5a2 2 0 012-2z"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="type-selection flex flex-wrap gap-2 mb-2"></div>
+      <div class="answer-preview text-gray-500 text-sm italic mb-2">
+        Type : aucun sélectionné
+      </div>
+      <div class="options-container hidden space-y-2"></div>
+    </template>
   </head>
 
   <body class="bg-gray-100">
@@ -49,8 +97,9 @@
         <button
           id="add-section-btn"
           class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded text-sm font-medium transition"
+          onclick="addPage();"
         >
-          + Ajouter une section
+          + Ajouter une page
         </button>
       </div>
 
