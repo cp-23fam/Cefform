@@ -224,22 +224,45 @@ async function validateForm(event) {
 
   const infos = await getSelfInfosByToken();
 
-  const json = {
-    name: title.value,
-    description: description.value ?? "",
-    anonym: 1,
-    published: 0,
-    userIduser: infos.id,
-    questions: questionsList,
-  };
-
-  console.log(JSON.stringify(json));
-
-  fetch(`${apiUrl}/form?token=${encodeURIComponent(infos.token)}`, {
-    method: "POST",
-    body: JSON.stringify(json),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  if (formId != null) {
+    const json = {
+      idform: formId,
+      name: title.value,
+      description: description.value ?? "",
+      anonym: 1,
+      published: 0,
+      userIduser: infos.id,
+      questions: questionsList,
+    };
+    console.log(JSON.stringify(json));
+    await fetch(
+      `${apiUrl}/form/${formId}?token=${encodeURIComponent(infos.token)}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(json),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    window.location.href = "profile.html";
+  } else {
+    const json = {
+      name: title.value,
+      description: description.value ?? "",
+      anonym: 1,
+      published: 0,
+      userIduser: infos.id,
+      questions: questionsList,
+    };
+    console.log(JSON.stringify(json));
+    await fetch(`${apiUrl}/form?token=${encodeURIComponent(infos.token)}`, {
+      method: "POST",
+      body: JSON.stringify(json),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    window.location.href = "index.html";
+  }
 }

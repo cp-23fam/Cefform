@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorMsg = document.getElementById("error-msg");
 
   form.addEventListener("submit", async (e) => {
+    if (!errorMsg.classList.contains("hidden")) {
+      errorMsg.classList.add("hidden");
+    }
     spinner.classList.remove("hidden");
     e.preventDefault(); // empêche le rechargement de la page
 
