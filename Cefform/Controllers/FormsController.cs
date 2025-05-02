@@ -155,13 +155,15 @@ namespace Cefform.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteForm(uint id, string token)
         {
-
             var form = await _context.Forms.FindAsync(id);
-            if (form == null)
+            var user = await _context.Users.FindAsync(form?.UserIduser);
+
+            if (form == null || user == null)
             {
                 return NotFound();
             }
 
+            form.UserIduserNavigation = user;
             if (form.UserIduserNavigation!.Token != token)
             {
                 return Unauthorized();
