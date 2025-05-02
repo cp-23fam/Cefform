@@ -80,11 +80,14 @@ namespace Cefform.Controllers
         public async Task<IActionResult> PublishForm(uint id, string token)
         {
             var form = await _context.Forms.FindAsync(id);
+            var user = await _context.Users.FindAsync(form?.UserIduser);
 
-            if (form == null)
+            if (form == null || user == null)
             {
                 return NotFound();
             }
+
+            form.UserIduserNavigation = user;
 
             if (form.UserIduserNavigation!.Token != token)
             {
@@ -102,11 +105,14 @@ namespace Cefform.Controllers
         public async Task<IActionResult> HideForm(uint id, string token)
         {
             var form = await _context.Forms.FindAsync(id);
+            var user = await _context.Users.FindAsync(form?.UserIduser);
 
-            if (form == null)
+            if (form == null || user == null)
             {
                 return NotFound();
             }
+
+            form.UserIduserNavigation = user;
 
             if (form.UserIduserNavigation!.Token != token)
             {
