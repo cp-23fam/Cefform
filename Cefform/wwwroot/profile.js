@@ -79,7 +79,7 @@ async function loadUserInfos() {
       const div = document.createElement("div");
       div.className =
         "p-4 border rounded-md bg-gray-50 hover:shadow transition-shadow";
-  
+
       div.innerHTML = `
           <div class="flex justify-between items-center">
             <div>
@@ -94,31 +94,30 @@ async function loadUserInfos() {
             </div>
           </div>
         `;
-  
+
       formsList.appendChild(div);
     });
   }
+
+  // Attacher les listeners pour suppression
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const formId = btn.dataset.id;
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
+        fetch(`${apiUrl}/form/${formId}`, {
+          method: "DELETE",
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Échec de suppression");
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("La suppression a échoué.");
+          });
+      }
+    });
+  });
 }
 
 loadUserInfos();
-
-// Attacher les listeners pour suppression
-document.querySelectorAll(".delete-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const formId = btn.dataset.id;
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-      fetch(`${apiUrl}/form/${formId}`, {
-        method: "DELETE",
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Échec de suppression");
-          alert("Formulaire supprimé.");
-          window.location.reload();
-        })
-        .catch((err) => {
-          console.error(err);
-          alert("La suppression a échoué.");
-        });
-    }
-  });
-});
