@@ -51,7 +51,6 @@ editForm.addEventListener("submit", (e) => {
       return res.json();
     })
     .then(() => {
-      alert("Profil mis à jour avec succès");
       window.location.href = `profile.html`;
     })
     .catch((err) => {
