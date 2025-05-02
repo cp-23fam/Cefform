@@ -158,6 +158,28 @@ namespace Cefform.Controllers
             return CreatedAtAction("GetForm", new { id = form.Idform }, form);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutForm(uint id, Form form, string token)
+        {
+            var user = await _context.Users.FindAsync(form.UserIduser);
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            form.UserIduserNavigation = user;
+
+            if (user.Token != token)
+            { 
+                return Unauthorized();
+            }
+
+            _context.Entry(form).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteForm(uint id, string token)
         {
