@@ -10,7 +10,7 @@ const submitButton = document.getElementById("submit-button");
 
 fetch(`${apiUrl}/form/${id.toString()}`)
   .then((res) => res.json())
-  .then((form) => {
+  .then(async (form) => {
     colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
       form.user.ceff
     )}`;
@@ -24,7 +24,9 @@ fetch(`${apiUrl}/form/${id.toString()}`)
       title.textContent = form.name;
       description.textContent = form.description;
 
-      form.questions.forEach((q, index) => {
+      const questions = await getQuestions(id, 1);
+
+      questions.forEach((q, index) => {
         const block = document.createElement("div");
         block.className = "mb-6";
 
@@ -37,7 +39,7 @@ fetch(`${apiUrl}/form/${id.toString()}`)
 
           answers.forEach((answer, i) => {
             const id = `q${index}_a${i}`;
-            const inputType = q.type === 2 ? "radio" : "checkbox";
+            const inputType = q.type === 1 ? "radio" : "checkbox";
 
             const optionDiv = document.createElement("div");
             optionDiv.className =
@@ -66,3 +68,13 @@ fetch(`${apiUrl}/form/${id.toString()}`)
       });
     }
   });
+
+async function getQuestions(id, page) {
+  return await fetch(`${apiUrl}/form/${id}/questions?page=${page}`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      return data;
+    });
+}

@@ -61,7 +61,7 @@ namespace Cefform.Controllers
             form.UserIduserNavigation = user;
             await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id}").ToListAsync();
 
-            var output = new FormDTO { Name = form.Name, Description = form.Description, Anonym = (form.Anonym == 1), CreateTime = form.CreateTime, EndTime = form.EndTime, User = UserDTO.fromUser(form.UserIduserNavigation), Questions = [.. form.Questions] };
+            var output = new FormDTO { Name = form.Name, Description = form.Description, Anonym = (form.Anonym == 1), CreateTime = form.CreateTime, EndTime = form.EndTime, User = UserDTO.fromUser(form.UserIduserNavigation) };
 
             return output;
         }

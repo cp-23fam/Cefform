@@ -16,7 +16,7 @@ namespace Cefform.DTO
 
         public static UserDTO fromUser(User user)
         {
-            return new UserDTO { FirstName = user.FirstName ?? "", LastName = user.LastName ?? "", Email = user.Email ?? "", Ceff = user.Ceff, Id = user.Iduser, Username = user.Username, Token = user.Token };
+            return new UserDTO { FirstName = user.FirstName ?? "", LastName = user.LastName ?? "", Email = user.Email ?? "", Ceff = user.Ceff, Id = user.Iduser };
         }
 
         public static User toUser(UserDTO dto, User? user = null) { 

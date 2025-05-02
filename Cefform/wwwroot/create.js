@@ -33,9 +33,9 @@ loadCeffComponents();
 const questionTypes = [
   "Texte",
   "Choix Unique",
+  "Choix Multiple",
   "Date",
   "Nombre",
-  "Choix Multiple",
 ];
 
 // Fonction utilitaire pour créer un bouton "poubelle" avec SVG
