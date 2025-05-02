@@ -57,11 +57,15 @@ public partial class CefformContext : DbContext
 
             entity.Property(e => e.Idform).HasColumnName("idform");
             entity.Property(e => e.Anonym).HasColumnName("anonym");
-            entity.Property(e => e.CreateTime).HasColumnName("create_time");
+            entity.Property(e => e.CreateTime)
+                .HasColumnType("datetime")
+                .HasColumnName("create_time");
             entity.Property(e => e.Description)
                 .HasMaxLength(125)
                 .HasColumnName("description");
-            entity.Property(e => e.EndTime).HasColumnName("end_time");
+            entity.Property(e => e.EndTime)
+                .HasColumnType("datetime")
+                .HasColumnName("end_time");
             entity.Property(e => e.Name)
                 .HasMaxLength(60)
                 .HasColumnName("name");
@@ -132,6 +136,7 @@ public partial class CefformContext : DbContext
             entity.HasIndex(e => e.Username, "UNIQUE");
 
             entity.Property(e => e.Iduser).HasColumnName("iduser");
+            entity.Property(e => e.Ceff).HasColumnName("ceff");
             entity.Property(e => e.Email)
                 .HasMaxLength(115)
                 .HasColumnName("email");

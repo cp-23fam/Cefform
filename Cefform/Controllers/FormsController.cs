@@ -132,6 +132,9 @@ namespace Cefform.Controllers
 
             form.UserIduserNavigation = user;
 
+            form.CreateTime = DateTime.Now;
+            form.EndTime = DateTime.Now.AddDays(10);
+
             if (user.Token != token)
             {
                 Unauthorized();
@@ -139,11 +142,9 @@ namespace Cefform.Controllers
 
             _context.Forms.Add(form);
 
-            var dbForm = _context.Forms.Last();
-
             foreach (Question question in form.Questions)
             {
-                if (question.Idquestion != dbForm.Idform) return BadRequest();
+                if (question.Idquestion != form.Idform) return BadRequest();
             }
 
             await _context.SaveChangesAsync();

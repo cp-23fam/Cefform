@@ -38,8 +38,6 @@ const questionTypes = [
   "Choix Multiple",
 ];
 
-let sectionCount = 0;
-
 // Fonction utilitaire pour créer un bouton "poubelle" avec SVG
 function createTrashButton(title = "Supprimer") {
   const button = document.createElement("button");
@@ -57,9 +55,12 @@ function createTrashButton(title = "Supprimer") {
 
 function addPage() {
   const pageDiv = document.createElement("div");
-  pageDiv.className = "bg-white p-4 rounded-lg shadow-md mb-4 relative";
+  pageDiv.className = "page bg-white p-4 rounded-lg shadow-md mb-4 relative";
 
   pageDiv.appendChild(pageTemplate.content.cloneNode(true));
+
+  pageDiv.querySelector("p[name='page-title']").innerHTML =
+    "Page - " + (document.querySelectorAll("div.page").length + 1);
 
   const deleteSectionBtn = createTrashButton("Supprimer la page");
   deleteSectionBtn.classList.add("absolute", "top-2", "right-2");
@@ -78,7 +79,7 @@ function addPage() {
 
 function prepareQuestion(container) {
   const questionDiv = document.createElement("div");
-  questionDiv.className = "bg-gray-100 p-3 rounded relative";
+  questionDiv.className = "question bg-gray-100 p-3 rounded relative";
 
   const deleteQuestionBtn = createTrashButton("Supprimer la question");
   deleteQuestionBtn.classList.add("absolute", "top-2", "right-2");
@@ -133,7 +134,9 @@ function addButtonsType(question) {
             const input = document.createElement("input");
             input.type = "text";
             input.placeholder = "Choix...";
-            input.className = "px-2 py-1 rounded border w-full";
+            input.className = "choice px-2 py-1 rounded border w-full";
+            input.required = true;
+            input.maxLength = 15;
 
             const deleteBtn = createTrashButton("Supprimer ce choix");
             deleteBtn.addEventListener("click", () => optionDiv.remove());
@@ -155,5 +158,61 @@ function addButtonsType(question) {
         optionsContainer.classList.add("hidden");
       }
     });
+  });
+}
+
+async function validateForm(event) {
+  event.preventDefault();
+
+  const title = document.querySelector("input[name='title']");
+  const description = document.querySelector("input[name='description']");
+
+  const pages = document.querySelectorAll(".page");
+  const questionsList = [];
+
+  for (let i = 0; i < pages.length; i++) {
+    const questions = pages[i].querySelectorAll("div.question");
+
+    for (const question of questions) {
+      const typePreview = question.querySelector(".answer-preview").innerHTML;
+
+      let value = question.querySelector('input[name="question"]').value;
+      const type = questionTypes.indexOf(typePreview.substring(7));
+
+      if (type == 1 || type == 4) {
+        const choices = question.querySelectorAll(".choice");
+
+        for (const choice of choices) {
+          value += "\t" + choice.value;
+        }
+      }
+
+      questionsList.push({
+        type: type,
+        page: i + 1,
+        content: value,
+      });
+    }
+  }
+
+  const infos = await getSelfInfosByToken();
+
+  const json = {
+    name: title.value,
+    description: description.value ?? "",
+    anonym: 1,
+    published: 0,
+    userIduser: infos.id,
+    questions: questionsList,
+  };
+
+  console.log(JSON.stringify(json));
+
+  fetch(`${apiUrl}/form?token=${encodeURIComponent(infos.token)}`, {
+    method: "POST",
+    body: JSON.stringify(json),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }

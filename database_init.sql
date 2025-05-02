@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `cefform`.`user` (
   `first_name` VARCHAR(40) NULL DEFAULT NULL,
   `last_name` VARCHAR(60) NULL DEFAULT NULL,
   `email` VARCHAR(115) NULL DEFAULT NULL,
-  `ceff` TINYINT NOT NULL DEFAULT 0,
+  `ceff` TINYINT NOT NULL DEFAULT '0',
   PRIMARY KEY (`iduser`),
   INDEX `UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -54,10 +54,10 @@ CREATE TABLE IF NOT EXISTS `cefform`.`form` (
   `idform` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(60) NOT NULL,
   `description` VARCHAR(125) NOT NULL,
-  `create_time` DATE NOT NULL,
-  `end_time` DATE NOT NULL,
+  `create_time` DATETIME NOT NULL,
+  `end_time` DATETIME NOT NULL,
   `anonym` TINYINT NOT NULL,
-  `published` TINYINT NOT NULL DEFAULT '-1',
+  `published` TINYINT NOT NULL DEFAULT '0',
   `user_iduser` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idform`),
   INDEX `fk_form_user_idx` (`user_iduser` ASC) VISIBLE,
