@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch((err) => {
         showError("Adresse email ou mot de passe incorrect.");
+        spinner.classList.add("hidden");
       });
   });
 

@@ -1,7 +1,30 @@
+const params = new URLSearchParams(window.location.search);
+const formId = params.get("id");
+
 const sectionsContainer = document.getElementById("sections-container");
 
 const pageTemplate = document.getElementById("page-template");
 const questionTemplate = document.getElementById("question-template");
+
+async function prepareForm() {
+  form = await loadFormData();
+  document.getElementById("title-lbl").value = form.name;
+  document.getElementById("description-lbl").value = form.description;
+}
+
+async function loadFormData() {
+  try {
+    const response = await fetch(`${apiUrl}/form/${formId}`);
+    const formData = await response.json();
+    return formData;
+  } catch (error) {
+    console.error("Erreur lors du chargement du formulaire", error);
+  }
+}
+
+if (formId != null) {
+  prepareForm();
+}
 
 async function loadCeffComponents() {
   const titleBar = document.getElementById("title-lbl");
@@ -26,6 +49,10 @@ async function loadCeffComponents() {
   cancelBtn.className = `px-6 py-2 rounded border border-${getMainColorFromCeff(
     infos.ceff
   )} text-gray-700 hover:bg-gray-100 transition`;
+
+  if (formId != null) {
+    createBtn.innerHTML = "Sauvegarder";
+  }
 }
 loadCeffComponents();
 
