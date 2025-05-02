@@ -89,7 +89,7 @@ async function loadUserInfos() {
             </div>
             <div class="flex gap-2 ml-4">
               <a href="stats.html?id=${form.idform}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Voir Réponses</a>
-              <a href="edit.html?id=${form.idform}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Modifier</a>
+              <a href="create.html?id=${form.idform}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Modifier</a>
               <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 delete-btn" data-id="${form.idform}">Supprimer</button>
             </div>
           </div>
