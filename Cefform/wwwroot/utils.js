@@ -7,7 +7,7 @@ async function getSelfInfosByToken() {
     `${apiUrl}/token?token=${encodeURIComponent(token)}`
   ).then((res) => {
     if (!res.ok) {
-      //   window.location.href = "/login";
+      // window.location.href = "/login.html";
       return;
     }
 
