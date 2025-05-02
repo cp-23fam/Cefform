@@ -1,0 +1,1 @@
+dotnet ef dbcontext scaffold "Server=192.168.20.129;Database=cefform;User=root;Password=password;" Pomelo.EntityFrameworkCore.MySql -o Models --project Cefform -f
