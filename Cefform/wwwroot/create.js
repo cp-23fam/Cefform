@@ -2,9 +2,11 @@ const params = new URLSearchParams(window.location.search);
 const formId = params.get("id");
 
 const sectionsContainer = document.getElementById("sections-container");
-
 const pageTemplate = document.getElementById("page-template");
 const questionTemplate = document.getElementById("question-template");
+
+let baseData = null;
+let baseQuestions = [];
 
 const questionTypes = [
   "Texte",
@@ -16,10 +18,6 @@ const questionTypes = [
 
 if (getCookie("token") === null) {
   window.location.href = "/login.html";
-}
-
-if (formId != null) {
-  const baseData = null;
 }
 
 async function prepareForm() {
@@ -37,6 +35,135 @@ async function loadFormData() {
   } catch (error) {
     console.error("Erreur lors du chargement du formulaire", error);
   }
+}
+async function prepareQuestionsVariable() {
+  baseQuestions = await loadAllQuestions();
+}
+
+async function loadAllQuestions() {
+  const allPages = [];
+  let currentPage = 1;
+
+  try {
+    while (true) {
+      const response = await fetch(
+        `${apiUrl}/form/${formId}/questions?page=${currentPage}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP ${response.status}`);
+      }
+
+      const questions = await response.json();
+
+      if (!Array.isArray(questions) || questions.length === 0) {
+        break;
+      }
+
+      allPages.push(questions);
+      currentPage++;
+    }
+
+    return allPages;
+  } catch (error) {
+    console.error("Erreur lors du chargement des questions :", error);
+    return [];
+  }
+}
+
+function displayLoadedQuestions() {
+  baseQuestions.forEach((pageQuestions, pageIndex) => {
+    addPage(); // Ajoute une nouvelle page vide
+    const pageDiv = sectionsContainer.lastElementChild;
+    const questionsContainer = pageDiv.querySelector(".questions-container");
+
+    pageQuestions.forEach((q) => {
+      const questionDiv = document.createElement("div");
+      questionDiv.className = "question bg-gray-100 p-3 rounded relative";
+
+      questionDiv.appendChild(questionTemplate.content.cloneNode(true));
+
+      const deleteQuestionBtn = questionDiv.querySelector(".delete-question");
+      deleteQuestionBtn.addEventListener("click", () => questionDiv.remove());
+
+      const typeSelection = questionDiv.querySelector(".type-selection");
+      typeSelection.innerHTML = questionTypes
+        .map(
+          (type) => `
+      <button
+        type="button"
+        class="type-btn text-sm border px-2 py-1 rounded hover:bg-gray-200"
+        data-type="${type}"
+      >
+        ${type}</button>`
+        )
+        .join("");
+
+      const typePreview = questionDiv.querySelector(".answer-preview");
+      const optionsContainer = questionDiv.querySelector(".options-container");
+
+      const [mainText, ...choices] = q.content.split("\t");
+
+      questionDiv.querySelector('input[name="question"]').value = mainText;
+
+      const selectedType = questionTypes[q.type];
+      typePreview.textContent = `Type : ${selectedType}`;
+
+      if (
+        selectedType === "Choix Unique" ||
+        selectedType === "Choix Multiple"
+      ) {
+        optionsContainer.classList.remove("hidden");
+
+        choices.forEach((choiceText) => {
+          const optionDiv = document.createElement("div");
+          optionDiv.className = "flex items-center gap-2";
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.value = choiceText;
+          input.placeholder = "Choix...";
+          input.className = "choice px-2 py-1 rounded border w-full";
+          input.required = true;
+          input.maxLength = 15;
+
+          const deleteBtn = createTrashButton("Supprimer ce choix");
+          deleteBtn.addEventListener("click", () => optionDiv.remove());
+
+          optionDiv.appendChild(input);
+          optionDiv.appendChild(deleteBtn);
+          optionsContainer.appendChild(optionDiv);
+        });
+
+        const addOptionBtn = document.createElement("button");
+        addOptionBtn.className = "text-sm text-blue-600 hover:underline";
+        addOptionBtn.textContent = "+ Ajouter un choix";
+        addOptionBtn.addEventListener("click", () => {
+          const newChoice = document.createElement("div");
+          newChoice.className = "flex items-center gap-2";
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "Choix...";
+          input.className = "choice px-2 py-1 rounded border w-full";
+          input.required = true;
+          input.maxLength = 15;
+
+          const deleteBtn = createTrashButton("Supprimer ce choix");
+          deleteBtn.addEventListener("click", () => newChoice.remove());
+
+          newChoice.appendChild(input);
+          newChoice.appendChild(deleteBtn);
+          optionsContainer.insertBefore(newChoice, addOptionBtn);
+        });
+
+        optionsContainer.appendChild(addOptionBtn);
+      }
+
+      addButtonsType(questionDiv);
+      questionsContainer.appendChild(questionDiv);
+    });
+  });
 }
 
 async function loadCeffComponents() {
@@ -110,27 +237,23 @@ function prepareQuestion(container) {
   const questionDiv = document.createElement("div");
   questionDiv.className = "question bg-gray-100 p-3 rounded relative";
 
-  const deleteQuestionBtn = createTrashButton("Supprimer la question");
-  deleteQuestionBtn.classList.add("absolute", "top-2", "right-2");
-  deleteQuestionBtn.addEventListener("click", () => questionDiv.remove());
-
   questionDiv.appendChild(questionTemplate.content.cloneNode(true));
 
-  questionDiv.querySelector(".type-selection").innerHTML = questionTypes
+  const deleteQuestionBtn = questionDiv.querySelector(".delete-question");
+  deleteQuestionBtn.addEventListener("click", () => questionDiv.remove());
+
+  const typeSelection = questionDiv.querySelector(".type-selection");
+  typeSelection.innerHTML = questionTypes
     .map(
       (type) => `
-        <button
-          type="button"
-          class="type-btn text-sm border px-2 py-1 rounded hover:bg-gray-200"
-          data-type="${type}"
-        >
-          ${type}</button
-        >`
+      <button
+        type="button"
+        class="type-btn text-sm border px-2 py-1 rounded hover:bg-gray-200"
+        data-type="${type}"
+      >
+        ${type}</button>`
     )
     .join("");
-
-  const deleteQuestionTrashBtn = questionDiv.querySelector(".delete-question");
-  deleteQuestionTrashBtn.addEventListener("click", () => questionDiv.remove());
 
   addButtonsType(questionDiv);
   container.appendChild(questionDiv);
@@ -140,6 +263,25 @@ function addButtonsType(question) {
   const typeButtons = question.querySelectorAll(".type-btn");
   const preview = question.querySelector(".answer-preview");
   const optionsContainer = question.querySelector(".options-container");
+
+  const createOptionField = () => {
+    const optionDiv = document.createElement("div");
+    optionDiv.className = "flex items-center gap-2";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Choix...";
+    input.className = "choice px-2 py-1 rounded border w-full";
+    input.required = true;
+    input.maxLength = 15;
+
+    const deleteBtn = createTrashButton("Supprimer ce choix");
+    deleteBtn.addEventListener("click", () => optionDiv.remove());
+
+    optionDiv.appendChild(input);
+    optionDiv.appendChild(deleteBtn);
+    return optionDiv;
+  };
 
   typeButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -151,40 +293,21 @@ function addButtonsType(question) {
         selectedType === "Choix Multiple"
       ) {
         optionsContainer.classList.remove("hidden");
-        if (optionsContainer.innerHTML == "") {
-          const addOptionBtn = document.createElement("button");
-          addOptionBtn.className = "text-sm text-blue-600 hover:underline";
-          addOptionBtn.textContent = "+ Ajouter un choix";
 
-          const createOptionField = () => {
-            const optionDiv = document.createElement("div");
-            optionDiv.className = "flex items-center gap-2";
-
-            const input = document.createElement("input");
-            input.type = "text";
-            input.placeholder = "Choix...";
-            input.className = "choice px-2 py-1 rounded border w-full";
-            input.required = true;
-            input.maxLength = 15;
-
-            const deleteBtn = createTrashButton("Supprimer ce choix");
-            deleteBtn.addEventListener("click", () => optionDiv.remove());
-
-            optionDiv.appendChild(input);
-            optionDiv.appendChild(deleteBtn);
-            return optionDiv;
-          };
-
-          optionsContainer.appendChild(createOptionField());
-          optionsContainer.appendChild(addOptionBtn);
-
-          addOptionBtn.addEventListener("click", () => {
-            optionsContainer.insertBefore(createOptionField(), addOptionBtn);
-          });
-        }
-      } else {
         optionsContainer.innerHTML = "";
+
+        const addOptionBtn = document.createElement("button");
+        addOptionBtn.className = "text-sm text-blue-600 hover:underline";
+        addOptionBtn.textContent = "+ Ajouter un choix";
+        addOptionBtn.addEventListener("click", () => {
+          optionsContainer.insertBefore(createOptionField(), addOptionBtn);
+        });
+
+        optionsContainer.appendChild(createOptionField());
+        optionsContainer.appendChild(addOptionBtn);
+      } else {
         optionsContainer.classList.add("hidden");
+        optionsContainer.innerHTML = "";
       }
     });
   });
@@ -274,7 +397,11 @@ async function validateForm(event) {
 }
 
 if (formId != null) {
-  prepareForm();
+  prepareForm().then(() => {
+    prepareQuestionsVariable().then(() => {
+      displayLoadedQuestions();
+    });
+  });
 }
 
 loadCeffComponents();
