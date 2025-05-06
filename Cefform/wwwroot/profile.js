@@ -111,15 +111,19 @@ async function loadUserInfos() {
       formsList.appendChild(div);
     });
   }
-
   // Attacher les listeners pour suppression
   document.querySelectorAll(".delete-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const formId = btn.dataset.id;
       if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-        fetch(`${apiUrl}/form/${formId}?token=${user.token}`, {
-          method: "DELETE",
-        })
+        fetch(
+          `${apiUrl}/form/${formId}?token=${encodeURIComponent(
+            getCookie("token")
+          )}`,
+          {
+            method: "DELETE",
+          }
+        )
           .then((res) => {
             if (!res.ok) throw new Error("Échec de suppression");
             window.location.reload();
