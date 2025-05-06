@@ -85,12 +85,25 @@ async function loadUserInfos() {
             <div>
               <h3 class="text-lg font-semibold">${form.name}</h3>
               <p class="text-sm text-gray-600">${form.description}</p>
-              <p class="text-xs text-gray-500 mt-1">Créé le ${form.createTime}</p>
+              <p class="text-xs text-gray-500 mt-1">Créé le ${
+                form.createTime
+              }</p>
             </div>
             <div class="flex gap-2 ml-4">
-              <a href="stats.html?id=${form.idform}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Voir Réponses</a>
-              <a href="create.html?id=${form.idform}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Modifier</a>
-              <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 delete-btn" data-id="${form.idform}">Supprimer</button>
+              <a href="stats.html?id=${
+                form.idform
+              }" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Voir Réponses</a>
+              <a href="create.html?id=${
+                form.idform
+              }" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Modifier</a>
+              <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 delete-btn" data-id="${
+                form.idform
+              }">Supprimer</button>
+              ${
+                form.published == 0
+                  ? `<button class="bg-green-500 text-white ms-2 px-3 py-1 rounded hover:bg-green-600" onclick="changeFormVisibility(${form.idform}, true);">Publier</button>`
+                  : `<button class="bg-gray-500 text-white ms-2 px-3 py-1 rounded hover:bg-gray-600" onclick="changeFormVisibility(${form.idform}, false);">Rendre privé</button>`
+              }
             </div>
           </div>
         `;
@@ -104,7 +117,7 @@ async function loadUserInfos() {
     btn.addEventListener("click", () => {
       const formId = btn.dataset.id;
       if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-        fetch(`${apiUrl}/form/${formId}`, {
+        fetch(`${apiUrl}/form/${formId}?token=${user.token}`, {
           method: "DELETE",
         })
           .then((res) => {
@@ -121,3 +134,23 @@ async function loadUserInfos() {
 }
 
 loadUserInfos();
+
+function changeFormVisibility(id, publish) {
+  const token = getCookie("token");
+
+  fetch(
+    `${apiUrl}/form/${id}/${
+      publish == true ? "publish" : "hide"
+    }?token=${token}`,
+    {
+      method: "PATCH",
+    }
+  )
+    .then((res) => {
+      res.text();
+    })
+    .then((data) => {
+      console.log(data);
+      window.location.reload();
+    });
+}
