@@ -6,7 +6,6 @@ const title = document.getElementById("form-title");
 const description = document.getElementById("form-description");
 const quizForm = document.getElementById("quiz-form");
 const colorBar = document.getElementById("color-bar");
-const submitButton = document.getElementById("submit-button");
 
 fetch(`${apiUrl}/form/${id.toString()}`)
   .then((res) => res.json())
@@ -14,7 +13,6 @@ fetch(`${apiUrl}/form/${id.toString()}`)
     colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
       form.user.ceff
     )}`;
-    submitButton.className += ` ${getMainColorButtonFromCeff(form.user.ceff)}`;
 
     if (form == null) {
       container.innerHTML = `
@@ -24,69 +22,124 @@ fetch(`${apiUrl}/form/${id.toString()}`)
       title.textContent = form.name;
       description.textContent = form.description;
 
-      const questions = await getQuestions(id, 1);
+      const questions = await getQuestions(id);
 
-      questions.forEach((q, index) => {
-        const block = document.createElement("div");
-        block.className = "mb-6";
+      for (let i = 0; i < questions.length; i++) {
+        const page = document.createElement("div");
 
-        switch (q.type) {
-          case 1:
-          case 2:
-            const parts = q.content.split("\t");
-            const questionText = parts[0];
-            const answers = parts.slice(1);
+        page.className =
+          "relative max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md mt-4";
 
-            block.innerHTML = `<label class="block font-semibold mb-2 text-lg">${questionText}</label>`;
+        page.innerHTML = `
+        <div
+          id="color-bar"
+          class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
+            form.user.ceff
+          )}"
+        ></div>
+        </div>`;
 
-            answers.forEach((answer, i) => {
-              const id = `q${index}_a${i}`;
-              const inputType = q.type === 1 ? "radio" : "checkbox";
+        document.querySelector("main").appendChild(page);
 
-              const optionDiv = document.createElement("div");
-              optionDiv.className =
-                "flex items-center gap-3 mb-2 pl-2 hover:bg-gray-50 rounded-md transition";
+        questions[i].forEach((q, index) => {
+          const block = document.createElement("div");
+          block.className = "mb-6";
 
-              optionDiv.innerHTML = `
-                            <input 
-                                type="${inputType}" 
-                                name="q${index}" 
-                                id="${id}" 
-                                value="${answer}" 
-                                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="${id}" class="text-gray-800 cursor-pointer select-none">${answer}</label>
-                        `;
+          switch (q.type) {
+            case 1:
+            case 2:
+              const parts = q.content.split("\t");
+              const questionText = parts[0];
+              const answers = parts.slice(1);
 
-              block.appendChild(optionDiv);
-            });
-            break;
-          case 3:
-            block.innerHTML = `
-                        <label class="block font-semibold mb-1">${q.content}</label>
-                        <input type="date" name="q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>
-            `;
-            break;
-          case 4:
-            block.innerHTML = `
-                        <label class="block font-semibold mb-1">${q.content}</label>
-                        <input type="number" name="q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>
-            `;
-            break;
+              block.innerHTML = `<label class="block font-semibold mb-2 text-lg">${questionText}</label>`;
 
-          default:
-            block.innerHTML = `
-                        <label class="block font-semibold mb-1">${q.content}</label>
-                        <textarea name="q${index}" rows="2" maxlength="300" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>`;
-            break;
-        }
+              answers.forEach((answer, ai) => {
+                const id = `p${i}q${index}a${ai}`;
+                const inputType = q.type === 1 ? "radio" : "checkbox";
 
-        quizForm.appendChild(block);
-      });
+                const optionDiv = document.createElement("div");
+                optionDiv.className =
+                  "flex items-center gap-3 mb-2 pl-2 hover:bg-gray-50 rounded-md transition";
+
+                optionDiv.innerHTML = `
+                              <input 
+                                  type="${inputType}" 
+                                  name="p${i}q${index}" 
+                                  id="${id}" 
+                                  value="${answer}" 
+                                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                              <label for="${id}" class="text-gray-800 cursor-pointer select-none">${answer}</label>
+                          `;
+
+                block.appendChild(optionDiv);
+              });
+              break;
+            case 3:
+              block.innerHTML = `
+                          <label class="block font-semibold mb-1">${q.content}</label>
+                          <input type="date" name="p${i}q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>
+              `;
+              break;
+            case 4:
+              block.innerHTML = `
+                          <label class="block font-semibold mb-1">${q.content}</label>
+                          <input type="number" name="p${i}q${index}" rows="2" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>
+              `;
+              break;
+
+            default:
+              block.innerHTML = `
+                          <label class="block font-semibold mb-1">${q.content}</label>
+                          <textarea name="p${i}q${index}" rows="2" maxlength="300" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>`;
+              break;
+          }
+
+          page.appendChild(block);
+        });
+      }
+
+      document.querySelector("main").innerHTML += `<div
+        class="relative max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md mt-3"
+        id="form-container"
+      >
+        <div
+          id="color-bar"
+          class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
+            form.user.ceff
+          )}"
+        ></div>
+        <div class="flex gap-4">
+          <a
+            href="/"
+            id="cancel-button"
+            class="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+          >
+            Annuler
+          </a>
+          <button
+            id="submit-button"
+            type="submit"
+            class="px-4 py-2 text-white rounded transition ${getMainColorButtonFromCeff(
+              form.user.ceff
+            )}"
+            form="quiz-form"
+          >
+            Envoyer
+          </button>
+        </div>
+      </div>`;
     }
   });
 
-async function getQuestions(id, page) {
-  return await fetch(`${apiUrl}/form/${id}/questions?page=${page}`)
+function SendResults(event) {
+  event.preventDefault();
+
+  console.log(quizForm.elements);
+}
+
+async function getQuestions(id) {
+  return await fetch(`${apiUrl}/form/${id}/questions`)
     .then((res) => {
       return res.json();
     })
