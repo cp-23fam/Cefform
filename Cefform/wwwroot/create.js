@@ -4,6 +4,11 @@ const formId = params.get("id");
 const sectionsContainer = document.getElementById("sections-container");
 const pageTemplate = document.getElementById("page-template");
 const questionTemplate = document.getElementById("question-template");
+const cancelBtn = document.getElementById("cancel-btn");
+
+if (formId != null) {
+  cancelBtn.href = "/profile.html";
+}
 
 let baseData = null;
 let baseQuestions = [];
@@ -40,7 +45,6 @@ async function loadFormData() {
 async function prepareQuestionsVariable() {
   baseQuestions = await loadAllQuestions();
 }
-
 
 async function loadAllQuestions() {
   try {
