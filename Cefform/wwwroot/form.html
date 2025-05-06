@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>cefforms</title>
@@ -9,38 +8,32 @@
 
     <script src="utils.js"></script>
     <script src="form.js" defer></script>
-</head>
+  </head>
 
-<body class="bg-gray-100 text-gray-900">
+  <body class="bg-gray-100 text-gray-900">
     <!-- Header -->
     <header>
-        <div class="bg-gray-400 text-white py-4 px-6 flex">
-            <h1 class="text-xl font-semibold m-auto">cefforms</h1>
-        </div>
+      <div class="bg-gray-400 text-white py-4 px-6 flex">
+        <h1 class="text-xl font-semibold m-auto">cefforms</h1>
+      </div>
     </header>
 
     <!-- Form container -->
-    <main class="p-4">
-        <div class="relative max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md" id="form-container">
-            <!-- Couleur latérale -->
-            <div id="color-bar" class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-gray-300"></div>
-            <h1 class="text-2xl font-bold mb-4" id="form-title">Chargement...</h1>
-            <p class="text-gray-600 mb-6" id="form-description"></p>
-            <form id="quiz-form" class="space-y-4">
-                <!-- Questions générées ici -->
-            </form>
-            <div class="mt-6 flex gap-4">
-                <a href="/" id="cancel-button"
-                    class="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
-                    Annuler
-                </a>
-                <button id="submit-button" type="submit" class="px-4 py-2 text-white rounded transition">
-                    Envoyer
-                </button>
-            </div>
-
-    </main>
-
-</body>
-
+    <form id="quiz-form" onsubmit="SendResults(event);">
+      <main class="p-4">
+        <div
+          class="relative max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md"
+          id="form-container"
+        >
+          <!-- Couleur latérale -->
+          <div
+            id="color-bar"
+            class="absolute top-0 right-0 h-full w-2 rounded-r-xl bg-gray-300"
+          ></div>
+          <h1 class="text-2xl font-bold mb-4" id="form-title">Chargement...</h1>
+          <p class="text-gray-600 mb-6" id="form-description"></p>
+        </div>
+      </main>
+    </form>
+  </body>
 </html>

@@ -68,11 +68,28 @@ namespace Cefform.Controllers
         }
 
         [HttpGet("{id}/questions")]
-        public async Task<ActionResult<List<Question>>> GetFormQuestions(uint id, int page = 1)
+        public async Task<ActionResult<List<List<Question>>>> GetFormQuestions(uint id, int? page = null)
         {
-            var questions = _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} AND page = {page}");
+            FormattableString sqlString = $"SELECT * FROM question WHERE form_idform = {id}";
+            if (page != null) sqlString = $"SELECT * FROM question WHERE form_idform = {id} AND page = {page}";
 
-            var output = await questions.ToListAsync();
+            var questions = _context.Questions.FromSql(sqlString);
+            var list = await questions.ToListAsync();
+            List<List<Question>> output = [new List<Question> { }];
+
+            foreach (var question in questions)
+            {
+                if (question.Page == 0) continue;
+                if (page == null)
+                {
+                    if (output.Count < question.Page) output.Add(new List<Question> { });
+                    output[question.Page - 1].Add(question);
+                } else
+                {
+                    output[0].Add(question);
+                }
+            }
+
 
             return output;
         }

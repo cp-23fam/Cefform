@@ -203,7 +203,7 @@ async function validateForm(event) {
       let value = question.querySelector('input[name="question"]').value;
       const type = questionTypes.indexOf(typePreview.substring(7));
 
-      if (type == 1 || type == 4) {
+      if (type == 1 || type == 2) {
         const choices = question.querySelectorAll(".choice");
 
         for (const choice of choices) {
