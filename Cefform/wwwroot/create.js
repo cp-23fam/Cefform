@@ -36,38 +36,19 @@ async function loadFormData() {
     console.error("Erreur lors du chargement du formulaire", error);
   }
 }
+
 async function prepareQuestionsVariable() {
   baseQuestions = await loadAllQuestions();
 }
 
+
 async function loadAllQuestions() {
-  const allPages = [];
-  let currentPage = 1;
-
   try {
-    while (true) {
-      const response = await fetch(
-        `${apiUrl}/form/${formId}/questions?page=${currentPage}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`Erreur HTTP ${response.status}`);
-      }
-
-      const questions = await response.json();
-
-      if (!Array.isArray(questions) || questions.length === 0) {
-        break;
-      }
-
-      allPages.push(questions);
-      currentPage++;
-    }
-
-    return allPages;
+    const response = await fetch(`${apiUrl}/form/${formId}/questions`);
+    const formData = await response.json();
+    return formData;
   } catch (error) {
-    console.error("Erreur lors du chargement des questions :", error);
-    return [];
+    console.error("Erreur lors du chargement du formulaire", error);
   }
 }
 
