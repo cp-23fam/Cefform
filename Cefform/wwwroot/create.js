@@ -18,8 +18,13 @@ if (getCookie("token") === null) {
   window.location.href = "/login.html";
 }
 
+if (formId != null) {
+  const baseData = null;
+}
+
 async function prepareForm() {
   form = await loadFormData();
+  baseData = form;
   document.getElementById("title-lbl").value = form.name;
   document.getElementById("description-lbl").value = form.description;
 }
@@ -226,7 +231,7 @@ async function validateForm(event) {
       idform: formId,
       name: title.value,
       description: description.value ?? "",
-      anonym: 1,
+      anonym: baseData.anonym,
       published: 0,
       userIduser: infos.id,
       questions: questionsList,
