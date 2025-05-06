@@ -206,6 +206,8 @@ namespace Cefform.Controllers
             }
 
             _context.Questions.RemoveRange(dbq);
+            await _context.SaveChangesAsync();
+
             _context.Questions.AddRange(form.Questions);
             await _context.SaveChangesAsync();
 

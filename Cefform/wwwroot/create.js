@@ -335,7 +335,7 @@ async function validateForm(event) {
       idform: formId,
       name: title.value,
       description: description.value ?? "",
-      anonym: baseData.anonym,
+      anonym: baseData.anonym == true ? 1 : 0,
       published: 0,
       userIduser: infos.id,
       questions: questionsList,
