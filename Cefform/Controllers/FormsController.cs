@@ -177,8 +177,9 @@ namespace Cefform.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutForm(uint id, Form form, string token)
+        public async Task<IActionResult> PutForm(uint id, [FromBody] Form form, string token)
         {
+
             var user = await _context.Users.FindAsync(form.UserIduser);
             if (user == null)
             {
@@ -192,9 +193,25 @@ namespace Cefform.Controllers
                 return Unauthorized();
             }
 
-            _context.Entry(form).State = EntityState.Modified;
+            form.Idform = id;
 
+            var dbq = _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id}");
+
+            foreach (Question q in form.Questions)
+            {
+                q.FormIdform = form.Idform;
+
+                var qid = await _context.Questions.AsNoTracking().Where(u => u.Content == q.Content).Select(u => u.Idquestion).FirstOrDefaultAsync();
+                q.Idquestion = qid;
+            }
+
+            _context.Questions.RemoveRange(dbq);
+            _context.Questions.AddRange(form.Questions);
             await _context.SaveChangesAsync();
+
+            _context.Entry(form).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
