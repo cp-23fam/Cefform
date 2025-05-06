@@ -3,15 +3,11 @@ const container = document.getElementById("card-container");
 fetch(`${apiUrl}/form/list`)
   .then((res) => res.json())
   .then((data) => {
-    container.innerHTML = ``;
-    container.className =
-      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
+    container.innerHTML = "";
     data.forEach((form) => {
       const card = createCard(form);
       container.appendChild(card);
     });
-    container.className =
-      "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:mx-8 lg:mx-20";
   })
   .catch((error) => {
     console.error("Erreur lors de la récupération des données :", error);
@@ -29,13 +25,12 @@ function createCard(form) {
     "relative bg-gray-200 p-4 rounded-lg shadow flex flex-col justify-between hover:bg-gray-300 transition";
 
   card.innerHTML = `
-    <div>
       <h2 class="text-lg font-semibold">${form.name}</h2>
       <p class="text-sm text-gray-600">${form.description}</p>
     </div>
     <div class="absolute top-0 right-0 h-full w-2 rounded-r-lg bg-${getMainColorFromCeff(
       form.ceff
-    )}"></div>
+    )}">
   `;
 
   link.appendChild(card);
@@ -62,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Bouton "Créer un formulaire"
     const createFormButton = document.createElement("a");
     createFormButton.href = `create.html`;
-    createFormButton.className = `${getColorButtonClass(
+    createFormButton.className = `${getMainColorButtonFromCeff(
       infos.ceff
     )} text-white px-4 py-1 rounded transition hidden lg:block`;
     createFormButton.textContent = "Créer un formulaire";
@@ -73,20 +68,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     header.appendChild(userButton);
   }
 });
-
-// Fonction utilitaire pour lire un cookie par nom
-
-function getColorButtonClass(color) {
-  switch (color) {
-    case 0:
-      return "bg-green-500 hover:bg-green-600";
-    case 1:
-      return "bg-blue-500 hover:bg-blue-600";
-    case 2:
-      return "bg-purple-500 hover:bg-purple-600";
-    case 3:
-      return "bg-cyan-500 hover:bg-cyan-600";
-    default:
-      return "bg-gray-500 hover:bg-gray-600";
-  }
-}

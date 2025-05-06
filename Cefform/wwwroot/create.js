@@ -6,6 +6,14 @@ const sectionsContainer = document.getElementById("sections-container");
 const pageTemplate = document.getElementById("page-template");
 const questionTemplate = document.getElementById("question-template");
 
+const questionTypes = [
+  "Texte",
+  "Choix Unique",
+  "Choix Multiple",
+  "Date",
+  "Nombre",
+];
+
 async function prepareForm() {
   form = await loadFormData();
   document.getElementById("title-lbl").value = form.name;
@@ -20,10 +28,6 @@ async function loadFormData() {
   } catch (error) {
     console.error("Erreur lors du chargement du formulaire", error);
   }
-}
-
-if (formId != null) {
-  prepareForm();
 }
 
 async function loadCeffComponents() {
@@ -54,18 +58,7 @@ async function loadCeffComponents() {
     createBtn.innerHTML = "Sauvegarder";
   }
 }
-loadCeffComponents();
 
-// Types disponibles
-const questionTypes = [
-  "Texte",
-  "Choix Unique",
-  "Choix Multiple",
-  "Date",
-  "Nombre",
-];
-
-// Fonction utilitaire pour créer un bouton "poubelle" avec SVG
 function createTrashButton(title = "Supprimer") {
   const button = document.createElement("button");
   button.className =
@@ -266,3 +259,9 @@ async function validateForm(event) {
     window.location.href = "index.html";
   }
 }
+
+if (formId != null) {
+  prepareForm();
+}
+
+loadCeffComponents();

@@ -1,56 +1,51 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("login-form");
-  const spinner = document.getElementById("loading-spinner");
-  const errorMsg = document.getElementById("error-msg");
+const form = document.getElementById("login-form");
+const spinner = document.getElementById("loading-spinner");
+const errorMsg = document.getElementById("error-msg");
 
-  form.addEventListener("submit", async (e) => {
-    if (!errorMsg.classList.contains("hidden")) {
-      errorMsg.classList.add("hidden");
-    }
-    spinner.classList.remove("hidden");
-    e.preventDefault(); // empêche le rechargement de la page
-
-    const email = document.getElementById("text").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    // Exemple de vérification basique
-    if (!email || !password) {
-      showError("Veuillez remplir tous les champs.");
-      return;
-    }
-
-    const encrypted = await getPublicKeyAndEncrypt(password);
-
-    const url = encodeURIComponent(encrypted);
-    // Simule une requête d'authentification
-    fetch(`${apiUrl}/login?user=${email}&pwd=${url}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Échec de la connexion");
-        return res.text();
-      })
-      .then(async (data) => {
-        // Redirection ou stockage du token selon le backend
-        const now = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
-        document.cookie = `token=${data}; expires=${now.toUTCString()}; path=/;`;
-        await getUserIdByToken(data);
-        window.location.href = "/";
-      })
-      .catch((err) => {
-        showError("Adresse email ou mot de passe incorrect.");
-        spinner.classList.add("hidden");
-      });
-  });
-
-  function showError(message) {
-    errorMsg.innerHTML = message;
-    errorMsg.classList.remove("hidden");
+form.addEventListener("submit", async (e) => {
+  if (!errorMsg.classList.contains("hidden")) {
+    errorMsg.classList.add("hidden");
   }
+  spinner.classList.remove("hidden");
+  e.preventDefault();
+
+  const email = document.getElementById("text").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    showError("Veuillez remplir tous les champs.");
+    return;
+  }
+
+  const encrypted = await getPublicKeyAndEncrypt(password);
+
+  const url = encodeURIComponent(encrypted);
+  fetch(`${apiUrl}/login?user=${email}&pwd=${url}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Échec de la connexion");
+      return res.text();
+    })
+    .then(async (data) => {
+      const now = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
+      document.cookie = `token=${data}; expires=${now.toUTCString()}; path=/;`;
+      await getUserIdByToken(data);
+      window.location.href = "/";
+    })
+    .catch((err) => {
+      showError("Adresse email ou mot de passe incorrect.");
+      spinner.classList.add("hidden");
+    });
 });
+
+function showError(message) {
+  errorMsg.innerHTML = message;
+  errorMsg.classList.remove("hidden");
+}
 
 async function getPublicKeyAndEncrypt(message) {
   const key = await fetch(`${apiUrl}/publickey`).then((res) => {

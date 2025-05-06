@@ -1,5 +1,5 @@
 const params = new URLSearchParams(window.location.search);
-const id = parseInt(params.get("id")); // attention à bien le caster en nombre
+const id = parseInt(params.get("id"));
 
 const container = document.getElementById("form-container");
 const title = document.getElementById("form-title");
@@ -78,11 +78,6 @@ fetch(`${apiUrl}/form/${id.toString()}`)
                         <label class="block font-semibold mb-1">${q.content}</label>
                         <textarea name="q${index}" rows="2" maxlength="300" class="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none transition-shadow duration-300 shadow-sm hover:shadow-md"/>`;
             break;
-        }
-
-        if (q.type === 2 || q.type === 1) {
-        } else {
-          // Question texte
         }
 
         quizForm.appendChild(block);

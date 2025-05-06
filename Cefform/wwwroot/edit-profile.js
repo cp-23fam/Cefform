@@ -1,7 +1,3 @@
-// Récupérer l'ID de l'utilisateur depuis l'URL
-const params = new URLSearchParams(window.location.search);
-const userId = params.get("id");
-
 // Champ Text
 const firstName = document.getElementById("firstname");
 const lastName = document.getElementById("lastname");
@@ -14,7 +10,7 @@ const editForm = document.getElementById("edit-profile-form");
 const cancelBtn = document.getElementById("cancel-btn");
 
 // Mettre à jour le lien d'annulation
-cancelBtn.href = `profile.html`;
+cancelBtn.href = `/profile.html`;
 
 async function loadUserInfos() {
   user = await getSelfInfosByToken();
