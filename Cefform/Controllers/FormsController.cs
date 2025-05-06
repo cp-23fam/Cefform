@@ -57,6 +57,7 @@ namespace Cefform.Controllers
             {
                 return NotFound();
             }
+            user.Token = "";
 
             form.UserIduserNavigation = user;
             await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id}").ToListAsync();

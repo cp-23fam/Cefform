@@ -5,6 +5,10 @@ const email = document.getElementById("email");
 const ceff = document.getElementById("ceff");
 const editProfileLbl = document.getElementById("edit-profile-lbl");
 
+if (getCookie("token") === null) {
+  window.location.href = "/login.html";
+}
+
 // Éléments du formulaire
 const editForm = document.getElementById("edit-profile-form");
 const cancelBtn = document.getElementById("cancel-btn");

@@ -8,6 +8,10 @@ const userCeff = document.getElementById("user-ceff");
 const formsList = document.getElementById("forms-list");
 const editProfileBtn = document.getElementById("edit-profile-btn");
 
+if (getCookie("token") === null) {
+  window.location.href = "/login.html";
+}
+
 // Déconnexion
 const logoutBtn = document.getElementById("logout");
 logoutBtn.addEventListener("click", () => {
@@ -62,7 +66,7 @@ async function loadUserInfos() {
 
   try {
     const res = await fetch(
-      `${apiUrl}/user/${encodeURIComponent(user.id)}/form`
+      `${apiUrl}/user/${encodeURIComponent(user.id)}/form?token=${user.token}`
     );
     user.forms = res.ok ? await res.json() : [];
   } catch (err) {

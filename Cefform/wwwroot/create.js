@@ -14,6 +14,10 @@ const questionTypes = [
   "Nombre",
 ];
 
+if (getCookie("token") === null) {
+  window.location.href = "/login.html";
+}
+
 async function prepareForm() {
   form = await loadFormData();
   document.getElementById("title-lbl").value = form.name;
@@ -237,7 +241,11 @@ async function validateForm(event) {
           "Content-Type": "application/json",
         },
       }
-    );
+    ).then((res) => {
+      if (res.status == 401) {
+        window.location.href = "/login.html";
+      }
+    });
     window.location.href = "profile.html";
   } else {
     const json = {

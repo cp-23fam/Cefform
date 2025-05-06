@@ -22,8 +22,20 @@ namespace Cefform.Controllers
         }
 
         [HttpGet("{id}/form")]
-        public async Task<ActionResult<List<Form>>> GetUserForms(uint id)
+        public async Task<ActionResult<List<Form>>> GetUserForms(uint id, string token)
         {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            if (token != user.Token)
+            {
+                return Unauthorized();
+            }
+
             var forms = await _context.Forms.FromSql($"SELECT * FROM form WHERE user_iduser = {id}").ToListAsync();
 
             if (forms == null)
