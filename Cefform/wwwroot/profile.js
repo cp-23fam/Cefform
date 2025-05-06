@@ -146,17 +146,23 @@ loadUserInfos();
 function changeFormVisibility(id, publish) {
   const token = getCookie("token");
 
+  if (publish === false) {
+    const confirmHide = confirm(
+      "⚠️ Attention : Passer ce formulaire en privé risque de supprimer les réponses enregistrées. Souhaitez-vous vraiment continuer ?"
+    );
+
+    if (!confirmHide) return;
+  }
+
   fetch(
     `${apiUrl}/form/${id}/${
-      publish == true ? "publish" : "hide"
+      publish === true ? "publish" : "hide"
     }?token=${token}`,
     {
       method: "PATCH",
     }
   )
-    .then((res) => {
-      res.text();
-    })
+    .then((res) => res.text())
     .then((data) => {
       console.log(data);
       window.location.reload();
