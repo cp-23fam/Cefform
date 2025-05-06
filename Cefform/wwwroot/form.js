@@ -135,7 +135,17 @@ fetch(`${apiUrl}/form/${id.toString()}`)
 function SendResults(event) {
   event.preventDefault();
 
-  console.log(quizForm.elements);
+  for (elem of quizForm.elements) {
+    if (elem.getAttribute("type") == "submit") continue;
+    
+    if (elem.getAttribute("type") == "radio" || elem.getAttribute("type") == "checkbox" ) {
+
+      console.log(elem.checked);
+    } else {
+      console.log(elem.value);
+      
+    }
+  }
 }
 
 async function getQuestions(id) {
