@@ -98,6 +98,17 @@
             maxlength="120"
           />
         </div>
+        <div class="mb-6 flex items-center" id="authDiv">
+          <input
+            type="checkbox"
+            id="authOnly-checkbox"
+            name="limitToAuthUsers"
+            class="mr-2 rounded border-gray-300 text-purple-600 focus:ring-purple-400"
+          />
+          <label for="authOnly-checkbox" class="text-gray-700 text-sm">
+            Limiter aux utilisateurs authentifiés et collecter les adresses mails
+          </label>
+        </div>
 
         <!-- Zone des sections dynamiques -->
         <div id="sections-container" class="space-y-4"></div>
