@@ -157,6 +157,7 @@ async function loadCeffComponents() {
   const colorBar = document.getElementById("color-bar");
   const createBtn = document.getElementById("create-btn");
   const cancelBtn = document.getElementById("cancel-btn");
+  const limitToAuthCbx = document.getElementById("authOnly-checkbox");
 
   const infos = await getSelfInfosByToken();
   titleBar.className = `w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-${getMainColorFromCeff(
@@ -177,6 +178,8 @@ async function loadCeffComponents() {
 
   if (formId != null) {
     createBtn.innerHTML = "Sauvegarder";
+    limitToAuthCbx.className =
+      "hidden mr-2 rounded border-gray-300 text-purple-600 focus:ring-purple-400";
   }
 }
 
@@ -303,6 +306,7 @@ async function validateForm(event) {
 
   const title = document.querySelector("input[name='title']");
   const description = document.querySelector("input[name='description']");
+  const limitToAuthUsers = document.getElementById("authOnly-checkbox").checked;
 
   const pages = document.querySelectorAll(".page");
   const questionsList = [];
@@ -364,7 +368,7 @@ async function validateForm(event) {
     const json = {
       name: title.value,
       description: description.value ?? "",
-      anonym: 1,
+      anonym: !limitToAuthUsers,
       published: 0,
       userIduser: infos.id,
       questions: questionsList,
@@ -377,7 +381,7 @@ async function validateForm(event) {
         "Content-Type": "application/json",
       },
     });
-    window.location.href = "index.html";
+    window.location.href = "/";
   }
 }
 
