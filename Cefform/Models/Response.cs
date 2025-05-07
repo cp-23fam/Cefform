@@ -12,7 +12,7 @@ public partial class Response
 
     public uint QuestionIdquestion { get; set; }
 
-    public uint AnswererIdanswerer { get; set; }
+    public uint? AnswererIdanswerer { get; set; }
 
     [JsonIgnore]
     public virtual Answerer? AnswererIdanswererNavigation { get; set; } = null!;

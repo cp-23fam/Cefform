@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `cefform`.`response` (
   `idresponse` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `content` VARCHAR(300) NOT NULL,
   `question_idquestion` INT UNSIGNED NOT NULL,
-  `answerer_idanswerer` INT UNSIGNED NOT NULL,
+  `answerer_idanswerer` INT UNSIGNED NULL,
   PRIMARY KEY (`idresponse`),
   INDEX `fk_response_question1_idx` (`question_idquestion` ASC) VISIBLE,
   INDEX `fk_response_answerer1_idx` (`answerer_idanswerer` ASC) VISIBLE,

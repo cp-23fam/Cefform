@@ -176,6 +176,39 @@ namespace Cefform.Controllers
             return CreatedAtAction("GetForm", new { id = form.Idform }, form);
         }
 
+        [HttpPost("{id}/submit")]
+        public async Task<IActionResult> SubmitFormAnswer(uint id, SubmissionDTO submission)
+        {
+            var form = await _context.Forms.FindAsync(id);
+            var sqlQuestions = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id}").ToListAsync();
+
+            if (form == null)
+            {
+                return BadRequest();
+            }
+
+            form.Questions = sqlQuestions;
+
+            if (form.Questions.Count != submission.Responses.Count || form.Idform != submission.IdForm)
+            {
+                return BadRequest();
+            }
+
+            List<Question> questions = form.Questions.ToList();
+            for (int i = 0; i < submission.Responses.Count; i++)
+            {
+                var response = submission.Responses[i];
+
+                response.QuestionIdquestion = questions[i].Idquestion;
+                response.QuestionIdquestionNavigation = questions[i];
+            }
+
+            _context.AddRange(submission.Responses);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutForm(uint id, [FromBody] Form form, string token)
         {
