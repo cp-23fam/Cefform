@@ -157,7 +157,7 @@ async function loadCeffComponents() {
   const colorBar = document.getElementById("color-bar");
   const createBtn = document.getElementById("create-btn");
   const cancelBtn = document.getElementById("cancel-btn");
-  const limitToAuthCbx = document.getElementById("authOnly-checkbox");
+  const limitToAuthCbx = document.getElementById("authDiv");
 
   const infos = await getSelfInfosByToken();
   titleBar.className = `w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-${getMainColorFromCeff(
@@ -178,8 +178,7 @@ async function loadCeffComponents() {
 
   if (formId != null) {
     createBtn.innerHTML = "Sauvegarder";
-    limitToAuthCbx.className =
-      "hidden mr-2 rounded border-gray-300 text-purple-600 focus:ring-purple-400";
+    limitToAuthCbx.className = "hidden mb-6 flex items-center";
   }
 }
 

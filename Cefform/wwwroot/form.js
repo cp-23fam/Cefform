@@ -6,6 +6,7 @@ const title = document.getElementById("form-title");
 const description = document.getElementById("form-description");
 const quizForm = document.getElementById("quiz-form");
 const colorBar = document.getElementById("color-bar");
+const visibilityInfo = document.getElementById("form-visibility-info");
 
 fetch(`${apiUrl}/form/${id.toString()}`)
   .then((res) => res.json())
@@ -21,6 +22,15 @@ fetch(`${apiUrl}/form/${id.toString()}`)
     } else {
       title.textContent = form.name;
       description.textContent = form.description;
+      limitToAuthUsers = !form.anonym;
+
+      if (limitToAuthUsers) {
+        visibilityInfo.textContent =
+          "⚠ Ce formulaire n'est accessible qu'aux utilisateurs authentifiés. Vos réponses peuvent être liées à votre identité.";
+      } else {
+        visibilityInfo.textContent =
+          "Ce formulaire est anonyme. Vos réponses ne seront pas liées à votre identité.";
+      }
 
       const questions = await getQuestions(id);
 
@@ -137,13 +147,14 @@ function SendResults(event) {
 
   for (elem of quizForm.elements) {
     if (elem.getAttribute("type") == "submit") continue;
-    
-    if (elem.getAttribute("type") == "radio" || elem.getAttribute("type") == "checkbox" ) {
 
+    if (
+      elem.getAttribute("type") == "radio" ||
+      elem.getAttribute("type") == "checkbox"
+    ) {
       console.log(elem.checked);
     } else {
       console.log(elem.value);
-      
     }
   }
 }
