@@ -209,6 +209,22 @@ namespace Cefform.Controllers
             return Ok();
         }
 
+        [HttpGet("{id}/answers")]
+        public async Task<ActionResult<List<Response>>> GetFormAnswers(uint id)
+        {
+            var min = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion LIMIT 1").FirstOrDefaultAsync();
+            var max = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion DESC LIMIT 1").FirstOrDefaultAsync();
+
+            if (min == null || max == null)
+            {
+                return BadRequest();
+            }
+
+            var responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion}").ToListAsync();
+
+            return responses;
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutForm(uint id, [FromBody] Form form, string token)
         {
