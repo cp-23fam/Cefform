@@ -8,6 +8,9 @@ const quizForm = document.getElementById("quiz-form");
 const colorBar = document.getElementById("color-bar");
 const visibilityInfo = document.getElementById("form-visibility-info");
 
+let anonym;
+let userId;
+
 fetch(`${apiUrl}/form/${id.toString()}`)
   .then((res) => res.json())
   .then(async (form) => {
@@ -23,6 +26,8 @@ fetch(`${apiUrl}/form/${id.toString()}`)
       title.textContent = form.name;
       description.textContent = form.description;
       limitToAuthUsers = !form.anonym;
+      anonym = !form.anonym;
+      userId = form.user.id;
 
       if (limitToAuthUsers) {
         visibilityInfo.textContent =
@@ -180,10 +185,14 @@ async function SendResults(event) {
     }
   }
 
-  const payload = {
+  let payload = {
     idForm: id,
     responses: responses,
   };
+
+  if (anonym) {
+    payload["idUser"] = userId;
+  }
 
   try {
     const res = await fetch(`${apiUrl}/form/${id}/submit`, {

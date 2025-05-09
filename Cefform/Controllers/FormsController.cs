@@ -194,6 +194,13 @@ namespace Cefform.Controllers
                 return BadRequest();
             }
 
+            var user = await _context.Users.FindAsync(submission.IdUser);
+
+            if (form.Anonym == 0 && user == null)
+            {
+                return BadRequest();
+            }
+
             form.Questions = sqlQuestions;
 
             if (form.Questions.Count != submission.Responses.Count || form.Idform != submission.IdForm)
@@ -208,6 +215,12 @@ namespace Cefform.Controllers
 
                 response.QuestionIdquestion = questions[i].Idquestion;
                 response.QuestionIdquestionNavigation = questions[i];
+
+                if (form.Anonym == 0)
+                {
+                    response.UserIduser = user!.Iduser;
+                    response.UserIduserNavigation = user;
+                }
             }
 
             _context.AddRange(submission.Responses);

@@ -348,16 +348,13 @@ async function validateForm(event) {
       questions: questionsList,
     };
     console.log(JSON.stringify(json));
-    await fetch(
-      `${apiUrl}/form/${formId}?token=${encodeURIComponent(infos.token)}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(json),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then((res) => {
+    fetch(`${apiUrl}/form/${formId}?token=${encodeURIComponent(infos.token)}`, {
+      method: "PUT",
+      body: JSON.stringify(json),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
       if (res.status == 401) {
         window.location.href = "/login.html";
       }
@@ -367,20 +364,20 @@ async function validateForm(event) {
     const json = {
       name: title.value,
       description: description.value ?? "",
-      anonym: !limitToAuthUsers,
+      anonym: !limitToAuthUsers == true ? 0 : 1,
       published: 0,
       userIduser: infos.id,
       questions: questionsList,
     };
     console.log(JSON.stringify(json));
-    await fetch(`${apiUrl}/form?token=${encodeURIComponent(infos.token)}`, {
+    fetch(`${apiUrl}/form?token=${encodeURIComponent(infos.token)}`, {
       method: "POST",
       body: JSON.stringify(json),
       headers: {
         "Content-Type": "application/json",
       },
     });
-    window.location.href = "/";
+    window.location.href = "profile.html";
   }
 }
 

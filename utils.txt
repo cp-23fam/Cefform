@@ -2,6 +2,7 @@ Sync DB : dotnet ef dbcontext scaffold "Server=192.168.20.129;Database=cefform;U
 
 Forms placeholders :
 {"name":"Formulaire - Placeholder","description":"Formulaire d'exemple pour avoir des données de base","anonym":1,"published":0,"userIduser":1,"questions":[{"type":4,"page":1,"content":"Quel age avez-vous?"},{"type":0,"page":1,"content":"Expliquez brièvement le fonctionnement d'une IA"},{"type":2,"page":1,"content":"Quel(es) langues parlez-vous?\tFrançais\tAllemand\tAnglais\tItalien"},{"type":3,"page":1,"content":"Quand êtes vous parti en vacances pour la dernière fois?"},{"type":1,"page":2,"content":"Comment vous qualifieriez vous en maths?\tMauvais\tSuffisant\tBon\tFort\tExcellent"},{"type":4,"page":2,"content":"Quelle est votre moyenne en maths?"}]}
+{"name":"Formulaire - Placeholder 2","description":"Formulaire de test","anonym":0,"published":0,"userIduser":1,"questions":[{"type":4,"page":1,"content":"Combien de temps passez vous par semaine sur les écrans?"},{"type":1,"page":1,"content":"Estimez vous que vous passez trop de temps sur les écrans?\tOui\tNon"},{"type":1,"page":1,"content":"Seriez vous prêt à payer pour passer moins de temps sur les écrans?\tOui\tNon"},{"type":1,"page":2,"content":"Êtes vous satisfait de ce questionnaire?\t1\t2\t3\t4\t5"}]}
 
 Submit placeholders :
 {"idForm":1,"responses":[{"content":"17"},{"content":"Un réseaux de neurones calcule le meilleur mot à écrire"},{"content":"13"},{"content":"2025-01-23"},{"content":"4"},{"content":"5"}]}

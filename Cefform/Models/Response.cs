@@ -12,11 +12,11 @@ public partial class Response
 
     public uint QuestionIdquestion { get; set; }
 
-    public uint? AnswererIdanswerer { get; set; }
-
-    [JsonIgnore]
-    public virtual Answerer? AnswererIdanswererNavigation { get; set; } = null!;
+    public uint? UserIduser { get; set; }
 
     [JsonIgnore]
     public virtual Question? QuestionIdquestionNavigation { get; set; } = null!;
+
+    [JsonIgnore]
+    public virtual User? UserIduserNavigation { get; set; }
 }

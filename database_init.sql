@@ -19,17 +19,6 @@ CREATE SCHEMA IF NOT EXISTS `cefform` DEFAULT CHARACTER SET utf8mb3 ;
 USE `cefform` ;
 
 -- -----------------------------------------------------
--- Table `cefform`.`answerer`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `cefform`.`answerer` (
-  `idanswerer` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `email` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`idanswerer`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
-
-
--- -----------------------------------------------------
 -- Table `cefform`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cefform`.`user` (
@@ -39,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `cefform`.`user` (
   `first_name` VARCHAR(40) NULL DEFAULT NULL,
   `last_name` VARCHAR(60) NULL DEFAULT NULL,
   `email` VARCHAR(115) NULL DEFAULT NULL,
-  `ceff` TINYINT NOT NULL DEFAULT -1,
+  `ceff` TINYINT NOT NULL DEFAULT '-1',
   PRIMARY KEY (`iduser`),
   INDEX `UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -95,18 +84,20 @@ CREATE TABLE IF NOT EXISTS `cefform`.`response` (
   `idresponse` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `content` VARCHAR(300) NOT NULL,
   `question_idquestion` INT UNSIGNED NOT NULL,
-  `answerer_idanswerer` INT UNSIGNED NULL,
+  `user_iduser` INT UNSIGNED NULL,
   PRIMARY KEY (`idresponse`),
   INDEX `fk_response_question1_idx` (`question_idquestion` ASC) VISIBLE,
-  INDEX `fk_response_answerer1_idx` (`answerer_idanswerer` ASC) VISIBLE,
-  CONSTRAINT `fk_response_answerer1`
-    FOREIGN KEY (`answerer_idanswerer`)
-    REFERENCES `cefform`.`answerer` (`idanswerer`),
+  INDEX `fk_response_user1_idx` (`user_iduser` ASC) VISIBLE,
   CONSTRAINT `fk_response_question`
     FOREIGN KEY (`question_idquestion`)
     REFERENCES `cefform`.`question` (`idquestion`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_response_user1`
+    FOREIGN KEY (`user_iduser`)
+    REFERENCES `cefform`.`user` (`iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
 

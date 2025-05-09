@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Cefform.Models;
 
@@ -18,8 +17,9 @@ public partial class User
 
     public string? Email { get; set; }
 
-    public sbyte Ceff { get; set; } = 0;
+    public sbyte Ceff { get; set; }
 
-    [JsonIgnore]
     public virtual ICollection<Form> Forms { get; set; } = new List<Form>();
+
+    public virtual ICollection<Response> Responses { get; set; } = new List<Response>();
 }
