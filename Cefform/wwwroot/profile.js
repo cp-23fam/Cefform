@@ -124,32 +124,32 @@ async function loadUserInfos() {
       window.location.href = `/create.html?id=${formId}`;
     });
   });
-}
 
-// Attacher les listeners pour suppression
-document.querySelectorAll(".delete-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const formId = btn.dataset.id;
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-      fetch(
-        `${apiUrl}/form/${formId}?token=${encodeURIComponent(
-          getCookie("token")
-        )}`,
-        {
-          method: "DELETE",
-        }
-      )
-        .then((res) => {
-          if (!res.ok) throw new Error("Échec de suppression");
-          window.location.reload();
-        })
-        .catch((err) => {
-          console.error(err);
-          alert("La suppression a échoué.");
-        });
-    }
+  // Attacher les listeners pour suppression
+  document.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const formId = btn.dataset.id;
+      if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
+        fetch(
+          `${apiUrl}/form/${formId}?token=${encodeURIComponent(
+            getCookie("token")
+          )}`,
+          {
+            method: "DELETE",
+          }
+        )
+          .then((res) => {
+            if (!res.ok) throw new Error("Échec de suppression");
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("La suppression a échoué.");
+          });
+      }
+    });
   });
-});
+}
 
 loadUserInfos();
 

@@ -364,20 +364,35 @@ async function validateForm(event) {
     const json = {
       name: title.value,
       description: description.value ?? "",
-      anonym: !limitToAuthUsers == true ? 0 : 1,
+      anonym: limitToAuthUsers == false ? 1 : 0,
       published: 0,
       userIduser: infos.id,
       questions: questionsList,
     };
     console.log(JSON.stringify(json));
-    fetch(`${apiUrl}/form?token=${encodeURIComponent(infos.token)}`, {
-      method: "POST",
-      body: JSON.stringify(json),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    window.location.href = "profile.html";
+    try {
+      const res = await fetch(
+        `${apiUrl}/form?token=${encodeURIComponent(infos.token)}`,
+        {
+          method: "POST",
+          body: JSON.stringify(json),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const error = await res.text();
+        console.error("Erreur serveur :", error);
+        alert("Erreur lors de la création du formulaire.");
+      } else {
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      alert("Erreur de connexion au serveur.");
+    }
   }
 }
 
