@@ -6,66 +6,160 @@ const description = document.getElementById("form-description");
 const responsesList = document.getElementById("responses-list");
 const colorBar = document.getElementById("color-bar");
 
-// Fonction principale qui charge tout
+let allQuestions = [];
+let allResponses = [];
+let form = null;
+
 async function loadFormAnswers() {
   try {
-    // 1. Charger les infos du formulaire
-    const form = await fetch(`${apiUrl}/form/${id}`).then((res) => res.json());
+    // Charger les infos du formulaire
+    form = await fetch(`${apiUrl}/form/${id}`).then((res) => res.json());
 
     if (!form) {
       container.innerHTML = `<p class="text-red-500 text-center">Formulaire introuvable.</p>`;
       return;
     }
 
-    // Appliquer la couleur de l'utilisateur
+    // Appliquer la couleur CEFF
     colorBar.className = `absolute top-0 right-0 h-full w-2 rounded-r-xl bg-${getMainColorFromCeff(
       form.user.ceff
     )}`;
 
-    // Afficher les infos du formulaire
+    // Afficher nom + description
     title.textContent = form.name;
     description.textContent = form.description;
 
-    // 2. Charger les questions
+    // Récupérer les questions
     const questions = await getQuestions(id);
-    const flatQuestions = questions.flat();
+    allQuestions = questions.flat();
 
-    // 3. Charger les réponses
+    // Récupérer toutes les réponses
     const responses = await fetch(`${apiUrl}/form/${id}/answers`).then((res) =>
       res.json()
     );
+    allResponses = responses;
 
-    // 4. Grouper les réponses par question
-    const grouped = {};
-    responses.forEach((r) => {
-      if (!grouped[r.questionIdquestion]) {
-        grouped[r.questionIdquestion] = [];
-      }
-      grouped[r.questionIdquestion].push(r.content);
-    });
+    // Si le formulaire n'est pas anonyme, on insère le filtre utilisateur
+    if (!form.anonym || form.anonym === 0) {
+      createUserSelect(responses);
+    }
 
-    // 5. Afficher chaque question + ses réponses
-    flatQuestions.forEach((q, index) => {
-      const block = document.createElement("div");
-      block.className = "bg-gray-50 p-4 rounded-lg border border-gray-200";
-
-      const responses = grouped[q.idquestion] || [];
-
-      block.innerHTML = `
-        <h2 class="text-lg font-semibold mb-2">${q.content}</h2>
-        ${
-          responses.length === 0
-            ? `<p class="text-sm text-gray-500 italic">Aucune réponse.</p>`
-            : getFormattedResponses(q, responses)
-        }
-      `;
-
-      responsesList.appendChild(block);
-    });
+    // Afficher les réponses (toutes par défaut)
+    renderAnswers(responses);
   } catch (err) {
     console.error("Erreur lors du chargement :", err);
     container.innerHTML = `<p class="text-red-500 text-center">Erreur lors du chargement des données.</p>`;
   }
+}
+
+// Affiche les réponses groupées par question (filtrées ou pas)
+function renderAnswers(responses) {
+  responsesList.innerHTML = "";
+
+  const grouped = {};
+  responses.forEach((r) => {
+    if (!grouped[r.questionIdquestion]) {
+      grouped[r.questionIdquestion] = [];
+    }
+    grouped[r.questionIdquestion].push(r.content);
+  });
+
+  if (allQuestions.length === 0) {
+    responsesList.innerHTML = `<p class="text-gray-500 italic mt-6">Aucune question n'a été définie pour ce formulaire.</p>`;
+    return;
+  }
+
+  allQuestions.forEach((q) => {
+    const block = document.createElement("div");
+    block.className = "bg-gray-50 p-4 rounded-lg border border-gray-200";
+
+    const resps = grouped[q.idquestion] || [];
+
+    block.innerHTML = `
+      <h2 class="text-lg font-semibold mb-2">${q.content.split("\t")[0]}</h2>
+      ${
+        resps.length === 0
+          ? `<p class="text-sm text-gray-500 italic">Aucune réponse.</p>`
+          : getFormattedResponses(q, resps)
+      }
+    `;
+
+    responsesList.appendChild(block);
+  });
+}
+
+async function createUserSelect(responses) {
+  const userIds = [...new Set(responses.map((r) => r.userIduser))];
+
+  const usersMap = new Map();
+
+  // Charger les infos de chaque user
+  await Promise.all(
+    userIds.map(async (id) => {
+      try {
+        const user = await fetch(`${apiUrl}/user/${id}`).then((res) =>
+          res.json()
+        );
+
+        let label = user.username;
+        if (user.firstName && user.lastName) {
+          label = `${user.firstName} ${user.lastName} - ${user.username}`;
+        }
+
+        usersMap.set(id, label);
+      } catch (e) {
+        console.warn(`Erreur lors du chargement de l'utilisateur ${id}`, e);
+        usersMap.set(id, `Utilisateur id : ${id}`);
+      }
+    })
+  );
+
+  if (usersMap.size === 0) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "my-4";
+
+  const label = document.createElement("label");
+  label.textContent = "Voir les réponses de :";
+  label.className = "block mb-1 text-sm text-gray-700";
+
+  const select = document.createElement("select");
+  select.className =
+    "w-full sm:w-auto border border-gray-300 rounded px-3 py-2 text-sm";
+
+  // Option globale = toutes les réponses
+  const allOption = document.createElement("option");
+  allOption.value = "";
+  allOption.textContent = "Tous les utilisateurs";
+  select.appendChild(allOption);
+
+  // Ajouter chaque utilisateur
+  usersMap.forEach((name, id) => {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = name;
+    select.appendChild(opt);
+  });
+
+  // Filtrer les réponses par utilisateur sélectionné
+  select.addEventListener("change", async () => {
+    const selectedUserId = select.value;
+
+    let filtered = allResponses;
+
+    if (selectedUserId) {
+      const res = await fetch(
+        `${apiUrl}/form/${id}/answers?userId=${selectedUserId}`
+      ).then((r) => r.json());
+      filtered = res;
+    }
+
+    renderAnswers(filtered);
+  });
+
+  wrapper.appendChild(label);
+  wrapper.appendChild(select);
+  description.after(wrapper); // Insert après la description
 }
 
 // Fonction pour afficher proprement les réponses selon le type de question
@@ -74,7 +168,6 @@ function getFormattedResponses(question, responses) {
     case 1: // choix unique
     case 2: // choix multiple
       const parts = question.content.split("\t");
-      const questionText = parts[0];
       const options = parts.slice(1);
 
       const counts = new Array(options.length).fill(0);
