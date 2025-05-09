@@ -12,8 +12,6 @@ public partial class User
 
     public string Token { get; set; } = null!;
 
-    public DateTime Expiration { get; set; }
-
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }

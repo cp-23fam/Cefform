@@ -13,9 +13,6 @@ public partial class Form
     public string Description { get; set; } = null!;
 
     [JsonIgnore]
-    public DateTime CreateTime { get; set; }
-
-    [JsonIgnore]
     public DateTime EndTime { get; set; }
 
     public sbyte Anonym { get; set; }

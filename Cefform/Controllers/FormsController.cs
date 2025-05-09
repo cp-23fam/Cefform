@@ -32,6 +32,13 @@ namespace Cefform.Controllers
 
             foreach (var form in forms)
             {
+                if (form.EndTime <= DateTime.Now)
+                {
+                    form.Published = 0;
+                    await _context.SaveChangesAsync();
+                    continue;
+                }
+                
                 var user = await _context.Users.FindAsync(form.UserIduser);
 
                 if (user == null)
@@ -62,7 +69,7 @@ namespace Cefform.Controllers
             form.UserIduserNavigation = user;
             await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id}").ToListAsync();
 
-            var output = new FormDTO { Name = form.Name, Description = form.Description, Anonym = (form.Anonym == 1), CreateTime = form.CreateTime, EndTime = form.EndTime, User = UserDTO.fromUser(form.UserIduserNavigation) };
+            var output = new FormDTO { Name = form.Name, Description = form.Description, Anonym = (form.Anonym == 1), EndTime = form.EndTime, User = UserDTO.fromUser(form.UserIduserNavigation) };
 
             return output;
         }
@@ -112,6 +119,7 @@ namespace Cefform.Controllers
                 return Unauthorized();
             }
 
+            form.EndTime = DateTime.Now.AddDays(30);
             form.Published = 1;
 
             await _context.SaveChangesAsync();
@@ -156,12 +164,11 @@ namespace Cefform.Controllers
 
             form.UserIduserNavigation = user;
 
-            form.CreateTime = DateTime.Now;
-            form.EndTime = DateTime.Now.AddDays(10);
+            form.EndTime = DateTime.Now.AddDays(30);
 
             if (user.Token != token)
             {
-                Unauthorized();
+                return Unauthorized();
             }
 
             _context.Forms.Add(form);
@@ -243,6 +250,19 @@ namespace Cefform.Controllers
             }
 
             form.Idform = id;
+
+            var min = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion LIMIT 1").FirstOrDefaultAsync();
+            var max = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion DESC LIMIT 1").FirstOrDefaultAsync();
+
+            if (min == null || max == null)
+            {
+                return BadRequest();
+            }
+
+            var responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion}").ToListAsync();
+            _context.Responses.RemoveRange(responses);
+
+            await _context.SaveChangesAsync();
 
             var dbq = _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id}");
 

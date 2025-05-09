@@ -48,10 +48,16 @@ namespace Cefform.Controllers
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut]
-        public async Task<IActionResult> PatchUser(UserDTO patch)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PatchUser(uint id, UserDTO patch)
         {
             var userId = await _context.Users.AsNoTracking().Where(u => u.Token == patch.Token).Select(u => u.Iduser).FirstOrDefaultAsync();
+
+            if (id != userId)
+            {
+                return BadRequest();
+            }
+
             var user = await _context.Users.FindAsync(userId);
 
             if (user == null)
