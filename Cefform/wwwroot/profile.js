@@ -121,7 +121,7 @@ async function loadUserInfos() {
       );
       if (!confirmHide) return;
       const formId = btn.dataset.id;
-      window.location.href = `/create.html?=${formId}`;
+      window.location.href = `/create.html?id=${formId}`;
     });
   });
 }
