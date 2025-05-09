@@ -230,8 +230,15 @@ namespace Cefform.Controllers
         }
 
         [HttpGet("{id}/answers")]
-        public async Task<ActionResult<List<Response>>> GetFormAnswers(uint id)
+        public async Task<ActionResult<List<ResponseDTO>>> GetFormAnswers(uint id, string token, uint? userId)
         {
+            uint? idUser = await _context.Users.AsNoTracking().Where(u => u.Token == token).Select(u => u.Iduser).FirstOrDefaultAsync();
+
+            if (idUser == null)
+            {
+                return BadRequest();
+            }
+
             var min = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion LIMIT 1").FirstOrDefaultAsync();
             var max = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion DESC LIMIT 1").FirstOrDefaultAsync();
 
@@ -240,9 +247,67 @@ namespace Cefform.Controllers
                 return BadRequest();
             }
 
+            List<Response> responses = [];
+            if (userId != null)
+            {
+                var user = await _context.Users.FindAsync(userId);
+
+                if (user == null)
+                {
+                    return BadRequest();
+                }
+
+                responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion} AND user_iduser = {user.Iduser}").ToListAsync();
+
+            }
+
+            responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion}").ToListAsync();
+
+            List<ResponseDTO> output = [];
+            foreach (Response rep in responses)
+            {
+
+                if (output.Where((e) => e.Content == rep.Content && e.QuestionIdquestion == rep.QuestionIdquestion).Count() > 0)
+                {
+                    output.Where((e) => e.Content == rep.Content && e.QuestionIdquestion == rep.QuestionIdquestion).ToList()[0].Count++;
+                    continue;
+                }
+
+                output.Add(ResponseDTO.FromReponse(rep));
+            }
+
+            return output;
+        }
+
+        [HttpGet("{id}/answers/users")]
+        public async Task<ActionResult<List<string>>> GetFormUserAnswer(uint id, string token)
+        {
+            uint? idUser = await _context.Users.AsNoTracking().Where(u => u.Token == token).Select(u => u.Iduser).FirstOrDefaultAsync();
+
+            if (idUser == null)
+            {
+                return BadRequest();
+            }
+
+            var min = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion LIMIT 1").FirstOrDefaultAsync();
+            var max = await _context.Questions.FromSql($"SELECT * FROM question WHERE form_idform = {id} ORDER BY idquestion DESC LIMIT 1").FirstOrDefaultAsync();
+
+            if (min == null || max == null)
+            {
+                return BadRequest();
+            }
+  
             var responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion}").ToListAsync();
 
-            return responses;
+            List<string> output = [];
+            foreach (Response rep in responses)
+            {
+                var user = _context.Users.Find(rep.UserIduser);
+
+                output.Add(user.Username);
+            }
+
+            return output.ToHashSet().ToList();
         }
 
         [HttpPut("{id}")]
