@@ -34,7 +34,7 @@ form.addEventListener("submit", async (e) => {
       const now = new Date(new Date().getTime() + 1000 * 60 * 60 * 24);
       document.cookie = `token=${data}; expires=${now.toUTCString()}; path=/;`;
       await getUserIdByToken(data);
-      window.location.href = "/";
+      window.location.href = "/profile.html";
     })
     .catch((err) => {
       showError("Adresse email ou mot de passe incorrect.");

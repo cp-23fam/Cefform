@@ -63,7 +63,7 @@ function renderAnswers(responses) {
     if (!grouped[r.questionIdquestion]) {
       grouped[r.questionIdquestion] = [];
     }
-    grouped[r.questionIdquestion].push(r.content);
+    grouped[r.questionIdquestion].push(r);
   });
 
   if (allQuestions.length === 0) {
@@ -172,17 +172,17 @@ function getFormattedResponses(question, responses) {
 
       const counts = new Array(options.length).fill(0);
 
-      responses.forEach((resp) => {
+      responses.forEach(({ content, count }) => {
         if (question.type === 2) {
-          // checkbox -> peut contenir plusieurs indices
-          resp.split("").forEach((char) => {
+          // choix multiple : chaque caractère représente une option cochée
+          content.split("").forEach((char) => {
             const idx = parseInt(char);
-            if (!isNaN(idx)) counts[idx]++;
+            if (!isNaN(idx) && idx < counts.length) counts[idx] += count;
           });
         } else {
-          // radio -> une seule valeur
-          const idx = parseInt(resp);
-          if (!isNaN(idx)) counts[idx]++;
+          // choix unique : un seul chiffre
+          const idx = parseInt(content);
+          if (!isNaN(idx) && idx < counts.length) counts[idx] += count;
         }
       });
 
@@ -200,9 +200,12 @@ function getFormattedResponses(question, responses) {
     case 3: // date
     case 4: // nombre
     default:
+      const flatList = responses.flatMap(({ content, count }) =>
+        Array(count).fill(content)
+      );
       return `
         <ul class="list-disc ml-5 space-y-1 text-sm text-gray-800">
-          ${responses.map((r) => `<li>${r}</li>`).join("")}
+          ${flatList.map((r) => `<li>${r}</li>`).join("")}
         </ul>
       `;
   }
@@ -225,37 +228,7 @@ function createBottomButtons() {
   backButton.className =
     "px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition text-sm";
 
-  const resetButton = document.createElement("button");
-  resetButton.textContent = "Réinitialiser les réponses";
-  resetButton.className =
-    "px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600 transition text-sm";
-
-  resetButton.addEventListener("click", async () => {
-    const confirmDelete = confirm(
-      "Es-tu sûr de vouloir supprimer toutes les réponses ? Cette action est irréversible."
-    );
-    if (!confirmDelete) return;
-
-    try {
-      const res = await fetch(`${apiUrl}/form/${id}/answers`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        alert("Erreur lors de la suppression des réponses.");
-        return;
-      }
-
-      alert("Réponses supprimées avec succès.");
-      location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Erreur réseau ou serveur.");
-    }
-  });
-
   buttonWrapper.appendChild(backButton);
-  buttonWrapper.appendChild(resetButton);
   container.appendChild(buttonWrapper);
 }
 
