@@ -24,10 +24,24 @@ namespace Cefform.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<ActionResult<List<FormListDTO>>> GetFormsList()
+        public async Task<ActionResult<List<FormListDTO>>> GetFormsList(string? token)
         {
+            List<Form>? forms;
+            if (token != null)
+            {
+                uint? idUser = await _context.Users.AsNoTracking().Where(u => u.Token == token).Select(u => u.Iduser).FirstOrDefaultAsync();
 
-            var forms = await _context.Forms.FromSql($"SELECT * FROM form WHERE published = 1").ToListAsync();
+                if (idUser == null)
+                {
+                    return BadRequest();
+                }
+
+                forms = await _context.Forms.FromSql($"SELECT * FROM form WHERE published = 1").ToListAsync();
+            } else
+            {
+                forms = await _context.Forms.FromSql($"SELECT * FROM form WHERE published = 1 AND anonym = 1").ToListAsync();
+            }
+            
             var output = new List<FormListDTO>();
 
             foreach (var form in forms)
@@ -280,7 +294,7 @@ namespace Cefform.Controllers
         }
 
         [HttpGet("{id}/answers/users")]
-        public async Task<ActionResult<List<string>>> GetFormUserAnswer(uint id, string token)
+        public async Task<ActionResult<List<UserDTO>>> GetFormUserAnswer(uint id, string token)
         {
             uint? idUser = await _context.Users.AsNoTracking().Where(u => u.Token == token).Select(u => u.Iduser).FirstOrDefaultAsync();
 
@@ -299,12 +313,18 @@ namespace Cefform.Controllers
   
             var responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion}").ToListAsync();
 
-            List<string> output = [];
+            List<UserDTO> output = [];
             foreach (Response rep in responses)
             {
                 var user = _context.Users.Find(rep.UserIduser);
+                user.Token = "";
 
-                output.Add(user.Username);
+                if (output.Where((u) => u.Username == user.Username).Count() > 0)
+                {
+                    continue;
+                }
+
+                output.Add(UserDTO.fromUser(user!));
             }
 
             return output.ToHashSet().ToList();

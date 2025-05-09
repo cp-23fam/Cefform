@@ -1,20 +1,5 @@
 const container = document.getElementById("card-container");
 
-fetch(`${apiUrl}/form/list`)
-  .then((res) => res.json())
-  .then((data) => {
-    container.innerHTML = "";
-    data.forEach((form) => {
-      const card = createCard(form);
-      container.appendChild(card);
-    });
-  })
-  .catch((error) => {
-    console.error("Erreur lors de la récupération des données :", error);
-    container.className = "flex items-center justify-center h-64";
-    container.innerHTML = `<p class="text-red-500 text-center">Impossible de charger les formulaires.</p>`;
-  });
-
 function createCard(form) {
   const link = document.createElement("a");
   link.href = `form.html?id=${form.id}`;
@@ -43,7 +28,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const infos = await getSelfInfosByToken();
 
+  let url = `${apiUrl}/form/list`;
   if (infos != null) {
+    url += `?token=${infos.token}`;
     const userButton = document.createElement("a");
     userButton.href = `profile.html`;
     userButton.className =
@@ -67,4 +54,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     header.appendChild(createFormButton);
     header.appendChild(userButton);
   }
+
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+      container.innerHTML = "";
+      data.forEach((form) => {
+        const card = createCard(form);
+        container.appendChild(card);
+      });
+    })
+    .catch((error) => {
+      console.error("Erreur lors de la récupération des données :", error);
+      container.className = "flex items-center justify-center h-64";
+      container.innerHTML = `<p class="text-red-500 text-center">Impossible de charger les formulaires.</p>`;
+    });
 });
