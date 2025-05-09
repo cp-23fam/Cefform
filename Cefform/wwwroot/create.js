@@ -348,13 +348,16 @@ async function validateForm(event) {
       questions: questionsList,
     };
     console.log(JSON.stringify(json));
-    fetch(`${apiUrl}/form/${formId}?token=${encodeURIComponent(infos.token)}`, {
-      method: "PUT",
-      body: JSON.stringify(json),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => {
+    await fetch(
+      `${apiUrl}/form/${formId}?token=${encodeURIComponent(infos.token)}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(json),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => {
       if (res.status == 401) {
         window.location.href = "/login.html";
       }
