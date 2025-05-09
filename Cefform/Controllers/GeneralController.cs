@@ -39,7 +39,6 @@ namespace Cefform.Controllers
                         {
                             sb.Append(hashBytes[i].ToString("X2"));
                         }
-                        DateTime expiration = DateTime.Now.AddDays(1.0);
 
                         string token = sb.ToString();
 
@@ -52,13 +51,12 @@ namespace Cefform.Controllers
                             if (dbUser != null)
                             {
                                 dbUser.Token = token;
-                                dbUser.Expiration = expiration;
 
                                 await _context.SaveChangesAsync();
                             }
                         } else
                         {
-                            _context.Users.Add(new User() { Username = user, Token = sb.ToString(), Ceff = 0, Expiration = expiration });
+                            _context.Users.Add(new User() { Username = user, Token = sb.ToString(), Ceff = 0 });
                             await _context.SaveChangesAsync();
                         }
 
