@@ -273,9 +273,10 @@ namespace Cefform.Controllers
 
                 responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion} AND user_iduser = {user.Iduser}").ToListAsync();
 
+            } else
+            {
+                responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion}").ToListAsync();
             }
-
-            responses = await _context.Responses.FromSql($"SELECT * FROM cefform.response WHERE question_idquestion BETWEEN {min.Idquestion} AND {max.Idquestion}").ToListAsync();
 
             List<ResponseDTO> output = [];
             foreach (Response rep in responses)

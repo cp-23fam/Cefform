@@ -9,7 +9,6 @@ const colorBar = document.getElementById("color-bar");
 const visibilityInfo = document.getElementById("form-visibility-info");
 
 let anonym;
-let userId;
 
 fetch(`${apiUrl}/form/${id.toString()}`)
   .then((res) => res.json())
@@ -27,7 +26,6 @@ fetch(`${apiUrl}/form/${id.toString()}`)
       description.textContent = form.description;
       limitToAuthUsers = !form.anonym;
       anonym = !form.anonym;
-      userId = form.user.id;
 
       if (limitToAuthUsers) {
         visibilityInfo.textContent =
@@ -190,8 +188,9 @@ async function SendResults(event) {
     responses: responses,
   };
 
+  const infos = await getSelfInfosByToken("token");
   if (anonym) {
-    payload["idUser"] = userId;
+    payload["idUser"] = infos.id;
   }
 
   try {
