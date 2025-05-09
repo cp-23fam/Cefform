@@ -80,6 +80,7 @@ async function loadUserInfos() {
   } else {
     formsList.innerHTML = ""; // Vider avant d’ajouter
     user.forms.forEach((form) => {
+      const anonymTxt = form.anonym ? "oui" : "non";
       const div = document.createElement("div");
       div.className =
         "p-4 border rounded-md bg-gray-50 hover:shadow transition-shadow";
@@ -89,17 +90,15 @@ async function loadUserInfos() {
             <div>
               <h3 class="text-lg font-semibold">${form.name}</h3>
               <p class="text-sm text-gray-600">${form.description}</p>
-              <p class="text-xs text-gray-500 mt-1">Créé le ${
-                form.createTime
-              }</p>
+              <p class="text-xs text-gray-500 mt-1">Anonyme : ${anonymTxt}</p>
             </div>
             <div class="flex gap-2 ml-4">
               <a href="stats.html?id=${
                 form.idform
               }" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Voir Réponses</a>
-              <a href="create.html?id=${
+              <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 edit-btn" data-id="${
                 form.idform
-              }" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Modifier</a>
+              }">Modifier</button>
               <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 delete-btn" data-id="${
                 form.idform
               }">Supprimer</button>
@@ -115,44 +114,47 @@ async function loadUserInfos() {
       formsList.appendChild(div);
     });
   }
-  // Attacher les listeners pour suppression
-  document.querySelectorAll(".delete-btn").forEach((btn) => {
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
+      const confirmHide = confirm(
+        "⚠️ Attention : Modifier ce formulaire risque de supprimer les réponses enregistrées. Souhaitez-vous vraiment continuer ?"
+      );
+      if (!confirmHide) return;
       const formId = btn.dataset.id;
-      if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
-        fetch(
-          `${apiUrl}/form/${formId}?token=${encodeURIComponent(
-            getCookie("token")
-          )}`,
-          {
-            method: "DELETE",
-          }
-        )
-          .then((res) => {
-            if (!res.ok) throw new Error("Échec de suppression");
-            window.location.reload();
-          })
-          .catch((err) => {
-            console.error(err);
-            alert("La suppression a échoué.");
-          });
-      }
+      window.location.href = `/create.html?=${formId}`;
     });
   });
 }
+
+// Attacher les listeners pour suppression
+document.querySelectorAll(".delete-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const formId = btn.dataset.id;
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce formulaire ?")) {
+      fetch(
+        `${apiUrl}/form/${formId}?token=${encodeURIComponent(
+          getCookie("token")
+        )}`,
+        {
+          method: "DELETE",
+        }
+      )
+        .then((res) => {
+          if (!res.ok) throw new Error("Échec de suppression");
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.error(err);
+          alert("La suppression a échoué.");
+        });
+    }
+  });
+});
 
 loadUserInfos();
 
 function changeFormVisibility(id, publish) {
   const token = getCookie("token");
-
-  if (publish === false) {
-    const confirmHide = confirm(
-      "⚠️ Attention : Passer ce formulaire en privé risque de supprimer les réponses enregistrées. Souhaitez-vous vraiment continuer ?"
-    );
-
-    if (!confirmHide) return;
-  }
 
   fetch(
     `${apiUrl}/form/${id}/${

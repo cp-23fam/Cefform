@@ -77,7 +77,7 @@ fetch(`${apiUrl}/form/${id.toString()}`)
                                   type="${inputType}" 
                                   name="p${i}q${index}" 
                                   id="${id}" 
-                                  value="${answer}" 
+                                  value="${ai}" 
                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                               <label for="${id}" class="text-gray-800 cursor-pointer select-none">${answer}</label>
                           `;
@@ -142,20 +142,68 @@ fetch(`${apiUrl}/form/${id.toString()}`)
     }
   });
 
-function SendResults(event) {
+async function SendResults(event) {
   event.preventDefault();
 
-  for (elem of quizForm.elements) {
-    if (elem.getAttribute("type") == "submit") continue;
+  const responses = [];
 
-    if (
-      elem.getAttribute("type") == "radio" ||
-      elem.getAttribute("type") == "checkbox"
-    ) {
-      console.log(elem.checked);
-    } else {
-      console.log(elem.value);
+  const questionGroups = {};
+
+  for (const elem of quizForm.elements) {
+    if (!elem.name || elem.type === "submit") continue;
+
+    if (!questionGroups[elem.name]) {
+      questionGroups[elem.name] = [];
     }
+    questionGroups[elem.name].push(elem);
+  }
+
+  for (const groupName in questionGroups) {
+    const elements = questionGroups[groupName];
+
+    const firstType = elements[0].type;
+
+    if (firstType === "radio") {
+      const selected = elements.find((el) => el.checked);
+      if (selected) {
+        responses.push({ content: selected.value });
+      } else {
+        responses.push({ content: "" });
+      }
+    } else if (firstType === "checkbox") {
+      const selected = elements
+        .filter((el) => el.checked)
+        .map((el) => el.value);
+      responses.push({ content: selected.join("") });
+    } else {
+      responses.push({ content: elements[0].value });
+    }
+  }
+
+  const payload = {
+    idForm: id,
+    responses: responses,
+  };
+
+  try {
+    const res = await fetch(`${apiUrl}/form/${id}/submit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      console.error("Erreur serveur :", error);
+      alert("Erreur lors de l'envoi du formulaire.");
+    } else {
+      window.location.href = "/";
+    }
+  } catch (error) {
+    console.error("Erreur réseau :", error);
+    alert("Erreur de connexion au serveur.");
   }
 }
 
