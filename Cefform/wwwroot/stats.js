@@ -34,9 +34,11 @@ async function loadFormAnswers() {
     allQuestions = questions.flat();
 
     // Récupérer toutes les réponses
-    const responses = await fetch(`${apiUrl}/form/${id}/answers`).then((res) =>
-      res.json()
-    );
+    const responses = await fetch(
+      `${apiUrl}/form/${id}/answers?token=${encodeURIComponent(
+        getCookie("token")
+      )}`
+    ).then((res) => res.json());
     allResponses = responses;
 
     // Si le formulaire n'est pas anonyme, on insère le filtre utilisateur
@@ -89,77 +91,75 @@ function renderAnswers(responses) {
 }
 
 async function createUserSelect(responses) {
-  const userIds = [...new Set(responses.map((r) => r.userIduser))];
+  try {
+    const users = await fetch(
+      `${apiUrl}/form/${id}/answers/users?token=${encodeURIComponent(
+        getCookie("token")
+      )}`
+    ).then((res) => res.json());
 
-  const usersMap = new Map();
+    if (!users.length) return;
 
-  // Charger les infos de chaque user
-  await Promise.all(
-    userIds.map(async (id) => {
-      try {
-        const user = await fetch(`${apiUrl}/user/${id}`).then((res) =>
-          res.json()
-        );
+    const usersMap = new Map();
 
-        let label = user.username;
-        if (user.firstName && user.lastName) {
-          label = `${user.firstName} ${user.lastName} - ${user.username}`;
-        }
+    for (const user of users) {
+      const label =
+        user.firstName && user.lastName
+          ? `${user.firstName} ${user.lastName} - ${user.username}`
+          : user.username;
 
-        usersMap.set(id, label);
-      } catch (e) {
-        console.warn(`Erreur lors du chargement de l'utilisateur ${id}`, e);
-        usersMap.set(id, `Utilisateur id : ${id}`);
-      }
-    })
-  );
-
-  if (usersMap.size === 0) return;
-
-  const wrapper = document.createElement("div");
-  wrapper.className = "my-4";
-
-  const label = document.createElement("label");
-  label.textContent = "Voir les réponses de :";
-  label.className = "block mb-1 text-sm text-gray-700";
-
-  const select = document.createElement("select");
-  select.className =
-    "w-full sm:w-auto border border-gray-300 rounded px-3 py-2 text-sm";
-
-  // Option globale = toutes les réponses
-  const allOption = document.createElement("option");
-  allOption.value = "";
-  allOption.textContent = "Tous les utilisateurs";
-  select.appendChild(allOption);
-
-  // Ajouter chaque utilisateur
-  usersMap.forEach((name, id) => {
-    const opt = document.createElement("option");
-    opt.value = id;
-    opt.textContent = name;
-    select.appendChild(opt);
-  });
-
-  // Filtrer les réponses par utilisateur sélectionné
-  select.addEventListener("change", async () => {
-    const selectedUserId = select.value;
-
-    let filtered = allResponses;
-
-    if (selectedUserId) {
-      const res = await fetch(
-        `${apiUrl}/form/${id}/answers?userId=${selectedUserId}`
-      ).then((r) => r.json());
-      filtered = res;
+      usersMap.set(user.id, label);
     }
 
-    renderAnswers(filtered);
-  });
+    const wrapper = document.createElement("div");
+    wrapper.className = "my-4";
 
-  wrapper.appendChild(label);
-  wrapper.appendChild(select);
-  description.after(wrapper); // Insert après la description
+    const label = document.createElement("label");
+    label.textContent = "Voir les réponses de :";
+    label.className = "block mb-1 text-sm text-gray-700";
+
+    const select = document.createElement("select");
+    select.className =
+      "w-full sm:w-auto border border-gray-300 rounded px-3 py-2 text-sm";
+
+    // Option globale = toutes les réponses
+    const allOption = document.createElement("option");
+    allOption.value = "";
+    allOption.textContent = "Tous les utilisateurs";
+    select.appendChild(allOption);
+
+    // Ajouter chaque utilisateur
+    usersMap.forEach((name, id) => {
+      const opt = document.createElement("option");
+      opt.value = id;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+
+    // Filtrer les réponses par utilisateur sélectionné
+    select.addEventListener("change", async () => {
+      const selectedUserId = select.value;
+
+      let filtered = allResponses;
+
+      if (selectedUserId) {
+        const res = await fetch(
+          `${apiUrl}/form/${id}/answers?userId=${selectedUserId}&token=${encodeURIComponent(
+            getCookie("token")
+          )}`
+        ).then((r) => r.json());
+        filtered = res;
+      }
+
+      renderAnswers(filtered);
+    });
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(select);
+    description.after(wrapper); // Insert après la description
+  } catch (e) {
+    console.error("Erreur lors du chargement des utilisateurs :", e);
+  }
 }
 
 // Fonction pour afficher proprement les réponses selon le type de question
